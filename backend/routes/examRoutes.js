@@ -1,6 +1,6 @@
 const express = require('express');
 const { addExam,allExam, deleteExam,editExam,viewExam} = require('../controllers/examController');
-const { adminAuthMiddleware } = require('../middlewares/adminAuthMiddleware');
+const { authMiddleware } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 

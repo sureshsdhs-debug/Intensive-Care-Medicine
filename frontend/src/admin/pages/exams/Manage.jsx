@@ -8,7 +8,7 @@ import { useAuth } from '../../../auth/AuthProvider';
 
 
 const Manage = ({getRole,roleAuth}) => {
-  const BACKEND_BASE_URL = process.env.BACKEND_BASE_URL;
+  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 const [records, setRecords] = useState([]);
 const [loading, setLoading] = useState(false);
 const { token } = useAuth();
@@ -86,7 +86,7 @@ const handleDeleteSubject = async (id) => {
   const fetchAllStudent = async () => {
     try {
       const { data } = await axios.get(`${BACKEND_BASE_URL}/api/exam/get-all`);
-console.log(data)
+// console.log(data)
       if (data?.success) {
         setRecords(data?.exam);
 

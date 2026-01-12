@@ -1,12 +1,12 @@
 const express = require('express');
-const { addSubject,allSubject, deleteSubject,editSubject} = require('../controllers/subjectController');
-const { adminAuthMiddleware } = require('../middlewares/adminAuthMiddleware');
+const { addSubject, allSubject, deleteSubject, editSubject } = require('../controllers/subjectController');
+const { authMiddleware } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-router.post('/add',addSubject);
-router.get('/get-all',allSubject);
-router.delete('/delete/:id',deleteSubject);
-router.put('/edit/:id',editSubject);
+router.post('/add', authMiddleware, addSubject);
+router.get('/get-all', authMiddleware, allSubject);
+router.delete('/delete/:id', authMiddleware, deleteSubject);
+router.put('/edit/:id', authMiddleware, editSubject);
 
 module.exports = router;

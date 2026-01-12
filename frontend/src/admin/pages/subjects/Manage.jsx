@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import DataTable from "react-data-table-component";
 const Manage = () => {
-  const BACKEND_BASE_URL = process.env.BACKEND_BASE_URL;
+  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   // Table columns

@@ -4,29 +4,38 @@ import axios from 'axios';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import DataTable from "react-data-table-component";
+import noImgage from "../../../assets/no-image.jpg";
+import { useAuth } from '../../../auth/AuthProvider';
+
+
 const Manage = () => {
-  const BACKEND_BASE_URL = process.env.BACKEND_BASE_URL;
+  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { token } = useAuth();
   // Table columns
   const columns = [
     // { name: "ID", selector: (row) => row.id, sortable: true },
-    { name: "Question", selector: (row) => row.questiontext, sortable: true }, 
-    { name: "Course Name", selector: (row) => row.coursename, sortable: true }, 
-    { name: "Subject Name", selector: (row) => row.subjectname, sortable: true }, 
-    { name: "Status", selector: (row) => (row.status==1 ? "Active" : "Inactive"), sortable: true },
+    {
+      name: "Image",
+      cell: (row) => (
+        <img src={row.image ? `${BACKEND_BASE_URL}/${row.image}` : noImgage} alt="question" style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "5px" }} />), sortable: false
+    },
+    { name: "Question", selector: (row) => row.questiontext, sortable: true },
+    { name: "Question Type", selector: (row) => row.questiontype, sortable: true },
+    { name: "Status", selector: (row) => (row.status == 1 ? (<span className='badge bg-success'>Active</span>) : (<span className='badge bg-danger'>Inactive</span>)), sortable: true },
     {
       name: "Action",
       cell: (row) => (
         <div className="d-flex">
-          <a href={`/questions/view/${row.id}`}>
+          {/* <a href={`/questions/view/${row.id}`}>
             <button className="btn btn-voilate m-1" title="View">
             <i className="bi bi-eye"></i>
             </button>
-          </a>
+          </a> */}
           <a href={`/questions/edit/${row.id}`}>
             <button className="btn btn-primary m-1" title="Edit">
-            <i className="bi bi-pencil-square"></i>
+              <i className="bi bi-pencil-square"></i>
             </button>
           </a>
           <button
@@ -35,63 +44,65 @@ const Manage = () => {
             title="Delete"
             disabled={loading}
           >
-           {loading ? "..." : <i className="bi bi-trash2"></i>}
+            {loading ? "..." : <i className="bi bi-trash2"></i>}
           </button>
         </div>
       ),
     },
   ];
 
-  
+
   // Delete employee function
 
-const handleDeleteSubject = async (id) => {
-  if (!window.confirm("Are you sure you want to delete this question?")) return;
-  setLoading(true);
-  try {
-    const { data } = await axios.delete(`${BACKEND_BASE_URL}/api/question/delete/${id}`);
-    if (data?.success) {
-      toast.success(data.message);
-      const studentData = records.filter(std => std.id !== id);
-      // setEmployeeData(updatedEmployees);
-      setRecords(studentData);
-    } else {
-      toast.error(data.message);
-    }
-  } catch (error) {
-    toast.error("Failed to delete student");
-  } finally {
-    setLoading(false);
-  }
-};
+  const handleDeleteSubject = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this question?")) return;
+    setLoading(true);
+    try {
+      const { data } = await axios.delete(`${BACKEND_BASE_URL}/api/question/delete/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (data?.success) {
 
-//  get all the student list 
+        toast.success(data.message);
+        const studentData = records.filter(std => std.id !== id);
+        setRecords(studentData);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error("Failed to delete student");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //  get all the student list 
 
   const fetchAllQuestion = async () => {
     try {
-      const { data } = await axios.get(`${BACKEND_BASE_URL}/api/question/get-all`);
-      
-      if (data?.success) {
+      const { data } = await axios.get(`${BACKEND_BASE_URL}/api/question/get-all`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
+      if (data?.success) {
         const formattedData = data.question.map((question) => ({
           id: question._id,
+          image: question.image,
           questiontext: question.questiontext,
-          coursename: question.courseDetails.length > 0 ? question.courseDetails[0].coursename : "N/A",
-          subjectname: question.subjectDetails.length > 0 ? question.subjectDetails[0].subjectname : "N/A",
+          questiontype: question.questiontype,
           status: question.status,
         }));
         setRecords(formattedData);  // Initialize records with fetched data
       }
 
     } catch (error) {
-      toast.error(error)
+      toast.error(error?.response?.data?.message || "Error fetching students");
     }
   }
 
   useEffect(() => {
     fetchAllQuestion();
-
-  }, []);
+  }, [token]);
   return (
     <div className="main">
       <div className="report-container">
@@ -103,24 +114,13 @@ const handleDeleteSubject = async (id) => {
         </div>
 
         <div className="report-body">
-          {/* <div className="report-topic-heading">
-            <h3 className="t-op">S.N</h3>
-            <h3 className="t-op">Name</h3>
-            <h3 className="t-op">Email</h3>
-            <h3 className="t-op">Mobile</h3>
-            <h3 className="t-op">Status</h3>
-            <h3 className="t-op">Action</h3>
-          </div> */}
-
-          {/* <div className="items"> */}
-
-              <DataTable
-              columns={columns}
-              data={records}
-              selectableRows
-              fixedHeader
-              pagination
-            />
+          <DataTable
+            columns={columns}
+            data={records}
+            selectableRows
+            fixedHeader
+            pagination
+          />
 
           {/* </div> */}
         </div>

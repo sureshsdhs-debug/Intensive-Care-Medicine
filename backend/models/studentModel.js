@@ -1,5 +1,21 @@
 const mongoose = require('mongoose');
 
+const sessionSchema = new mongoose.Schema({
+  deviceType: {
+    type: String,
+    enum: ["mobile", "desktop"],
+    required: true,
+  },
+  token: {
+    type: String,
+    required: true,
+  },
+  lastActive: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const createSchema = new mongoose.Schema({
     name:{
         type:String,
@@ -29,7 +45,10 @@ const createSchema = new mongoose.Schema({
        type: Number,
        default:1,
        enum: [1,2]  // Assuming 2 is inactive, 1 is active
-    }
+    },
+      // 🔥 NEW FIELD
+    activeSessions: [sessionSchema],
+
 }, { timestamps: true });
 
 const studentSchema = mongoose.model('students',createSchema)

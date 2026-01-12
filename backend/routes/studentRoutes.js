@@ -1,14 +1,29 @@
-const express = require('express');
-const { addStudent, getAll, loginStudent, logoutStudent, editStudent,deleteStudent,profile } = require('../controllers/studentController');
-const { adminAuthMiddleware } = require('../middlewares/adminAuthMiddleware');
+const express = require("express");
+const {
+  addStudent,
+  getAll,
+  loginStudent,
+  logoutStudent,
+  editStudent,
+  deleteStudent,
+  profile,
+} = require("../controllers/studentController");
+
+const { authMiddleware } = require("../middlewares/authMiddleware");
+
 const router = express.Router();
 
-router.post('/add', addStudent);
-router.get('/profile', profile);
-router.get('/get-all', getAll);
-router.post('/login', loginStudent);
-router.get('/logout', logoutStudent);
-router.put('/edit/:id', editStudent); // Fixed route parameter syntax
-router.delete('/delete/:id', deleteStudent); // Fixed route parameter syntax
+// 🔓 Public routes
+router.post("/login", loginStudent);
+router.get("/logout", logoutStudent);
+
+// 🔐 Admin protected routes
+router.post("/add", addStudent);
+router.get("/get-all", authMiddleware, getAll);
+router.put("/edit/:id", authMiddleware, editStudent);
+router.delete("/delete/:id", authMiddleware, deleteStudent);
+
+// 🔐 Authenticated user route (admin OR student)
+router.get("/profile", authMiddleware, profile);
 
 module.exports = router;

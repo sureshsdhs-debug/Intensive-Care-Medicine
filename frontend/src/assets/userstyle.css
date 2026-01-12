@@ -1,0 +1,548 @@
+/*-----------------------------------------------------------------------------------
+
+ Theme Name: Intensive care 
+ Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+ Author: Kapil Prajapati
+-----------------------------------------------------------------------------------*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+/*  font-family: "Poppins", sans-serif;*/
+
+:root {
+    --primary-background: linear-gradient(to right, #0c65c6, #2cb484);
+    --banner-background: linear-gradient(to right, #0c65c6 -17%, #2cb484 33%);
+    --banner-button: #004d9f;
+    --section-background: linear-gradient(to right, rgba(12, 101, 198, 0.2), rgba(44, 180, 132, 0.2));
+    --secondry-background: #2d2d2d;
+    --heading-color: #2cb484;
+    --white-background: #fff;
+    --black-background: #000;
+    --primary-color: #1a4845;
+    --black-color: #000;
+    --white-color: #fff;
+    --font-weight-100: 100;
+    --font-weight-200: 200;
+    --font-weight-300: 300;
+    --font-weight-400: 400;
+    --font-weight-500: 500;
+    --font-weight-600: 600;
+    --font-weight-700: 700;
+    --font-weight-800: 800;
+    --font-10: 10px;
+    --font-11: 11px;
+    --font-12: 12px;
+    --font-13: 13px;
+    --font-14: 14px;
+    --font-15: 15px;
+    --font-16: 16px;
+    --font-17: 17px;
+    --font-18: 18px;
+    --font-19: 19px;
+    --font-20: 20px;
+    --font-21: 21px;
+    --font-22: 22px;
+    --font-23: 23px;
+    --font-24: 24px;
+    --font-25: 25px;
+    --font-26: 26px;
+    --font-27: 27px;
+    --font-28: 28px;
+    --font-29: 29px;
+    --font-30: 30px;
+    --font-31: 31px;
+    --font-32: 32px;
+    --font-33: 33px;
+    --font-34: 34px;
+    --font-35: 35px;
+    --font-36: 36px;
+    --font-37: 37px;
+    --font-38: 38px;
+    --font-39: 39px;
+    --font-40: 40px;
+    --font-41: 41px;
+    --font-42: 42px;
+    --font-43: 43px;
+    --font-44: 44px;
+    --font-45: 45px;
+    --font-46: 46px;
+    --font-47: 47px;
+    --font-48: 48px;
+    --font-49: 49px;
+    --font-50: 50px;
+    --font-60: 60px;
+    --font-70: 70px;
+    --font-80: 80px;
+    --font-90: 90px;
+    --font-100: 100px;
+    --justify-center: center;
+    --justify-spabe: space-between;
+    --align-center: center;
+    --primary-display: block;
+    --secondary-display: flex;
+    --display-inline: inline-block;
+    --text-uppercase: uppercase;
+    --text-capital: capitalize;
+}
+
+body {
+    font-family: var(--primary-font-family);
+}
+.pager{
+      user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;   
+}
+
+p {
+    font-family: "Poppins", sans-serif;
+}
+
+h1 {
+    font-family: "Poppins", sans-serif;
+}
+
+h2 {
+    font-family: "Poppins", sans-serif;
+}
+
+h3 {
+    font-family: "Poppins", sans-serif;
+}
+
+h4 {
+    font-family: "Poppins", sans-serif;
+    margin-bottom: 0;
+}
+
+h5 {
+    font-family: "Poppins", sans-serif;
+}
+
+h6 {
+    font-family: "Poppins", sans-serif;
+}
+
+a {
+    font-family: "Poppins", sans-serif;
+}
+
+li {
+    font-family: "Poppins", sans-serif;
+}
+
+div {
+    font-family: "Poppins", sans-serif;
+}
+
+input {
+    font-family: "Poppins", sans-serif;
+}
+
+span {
+    font-family: "Poppins", sans-serif;
+}
+
+label {
+    font-family: "Poppins", sans-serif;
+}
+
+button {
+    font-family: "Poppins", sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial;
+    background: #f3efe6;
+}
+
+.pager {
+    width: 100vw;
+    height: 100vh;
+    /* position:relative;  */
+    background: white;
+    overflow: hidden;
+}
+
+.page {
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    display: none;
+    /* important: hide pages */
+    flex-direction: column;
+    justify-content: center;
+}
+
+.page.active {
+    display: block;
+    /* only ACTIVE page visible */
+}
+
+/* Controls */
+.controls {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 5px 10px;
+    background: #132573;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.btn:hover {
+    color: #132573 !important;
+}
+
+.btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.left-image-div {
+    width: 100%;
+    height: 100vh;
+}
+
+.left-image-div img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.right-content-div {
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    padding: 60px;
+}
+
+.right-content-div h6 {
+    color: #132573;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.right-content-div h2 {
+    color: #000;
+    font-size: 64px;
+    font-weight: 900;
+    margin-bottom: 20px;
+}
+
+.right-content-div h2 span {
+    color: #132573;
+}
+
+.right-content-div h5 {
+    color: #132573;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.front-page-div {
+    position: relative;
+}
+
+.front-page-shape {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.front-page-shape img {
+    width: 70%;
+    margin-left: auto;
+    display: block;
+}
+
+.second-page-div {
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    padding: 60px;
+    text-align: center;
+}
+
+.second-page-div h3 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    color: #000;
+}
+
+.second-page-div p {
+    font-size: 15px;
+    color: #000;
+}
+
+
+
+.title {
+    text-align: center;
+    font-size: 48px;
+    font-weight: 700;
+}
+
+.title span {
+    color: #1b2a6b;
+}
+
+.toc-row {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    margin: 15px 0;
+}
+
+.toc-text {
+    font-weight: 600;
+    white-space: nowrap;
+    color: #000;
+}
+
+.dots {
+    flex: 1;
+    border-bottom: 3px dotted #000;
+    margin: 0 20px;
+    height: 12px;
+}
+
+.pageno {
+    font-weight: 700;
+    font-size: 20px;
+    white-space: nowrap;
+    color: #000;
+}
+
+.table-content h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 33px;
+    font-weight: 800;
+    color: #000;
+}
+
+
+
+
+
+.table-content h2 span {
+    color: #132573;
+}
+
+.table-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.table-content-inn {
+    width: 80%;
+}
+
+.about-cont h2 {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.about-cont p {
+    font-size: 15px;
+    color: #000;
+}
+
+.question-answer {
+    padding: 60px;
+    display: flex;
+    align-items: center;
+    height: 100vh;
+}
+
+[type="radio"]:checked,
+[type="radio"]:not(:checked) {
+    position: absolute;
+    left: -9999px;
+}
+
+[type="radio"]:checked+label,
+[type="radio"]:not(:checked)+label {
+    position: relative;
+    padding-left: 28px;
+    cursor: pointer;
+    line-height: 20px;
+    display: inline-block;
+    color: #000;
+    font-size: 15px;
+}
+
+[type="radio"]:checked+label:before,
+[type="radio"]:not(:checked)+label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #132573;
+    border-radius: 100%;
+    background: #fff;
+}
+
+[type="radio"]:checked+label:after,
+[type="radio"]:not(:checked)+label:after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: #132573;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    border-radius: 100%;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+[type="radio"]:not(:checked)+label:after {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+}
+
+[type="radio"]:checked+label:after {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+}
+
+.question-answer h4 {
+    font-size: 15px;
+    line-height: 24px;
+    margin-bottom: 18px;
+    color: #000;
+}
+
+.answer-final-div h4 {
+    font-size: 15px;
+    line-height: 24px;
+    margin-bottom: 18px;
+    color: #000;
+}
+
+.answer-final-inn .title {
+    color: #000;
+}
+
+.answer-final-inn .percent {
+    color: #000;
+}
+
+.answer-final-div .item {
+    margin-bottom: 16px;
+    padding-left: 35px;
+    position: relative;
+}
+
+/* Circle normal */
+.answer-final-div .circle {
+    position: absolute;
+    left: 0;
+    top: 4px;
+    height: 22px;
+    width: 22px;
+    border: 3px solid #1e40af;
+    border-radius: 50%;
+}
+
+/* Circle Active Green */
+.answer-final-div .circle.active {
+    background-color: #22c55e;
+    border: 3px solid #22c55e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: white;
+}
+
+.answer-final-div .title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.answer-final-div .title {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.answer-final-div .percent {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Line progress */
+.answer-final-div .line {
+    width: 100%;
+    height: 3px;
+    background: #1e40af;
+    margin-top: 6px;
+}
+
+/* Active green line */
+.answer-final-div .line.active {
+    background: #22c55e;
+}
+
+/* Description box */
+.answer-final-div .desc-box {
+    margin-top: 15px;
+    background: #fff;
+    padding: 1px 0;
+    font-size: 14px;
+    color: #444;
+    line-height: 1.7;
+}
+
+.answer-final-div .audio-box {
+    margin-top: 15px;
+}
+
+.answer-final-div audio {
+    width: 100%;
+    border-radius: 40px;
+}
+
+.answer-final-div {
+    display: flex;
+    align-items: center;
+}
+
+.main {
+    height: calc(100vh - 70px);
+    width: 100%;
+    /* overflow-y: scroll; */
+    overflow-x: hidden;
+    padding: 0px !important;
+}

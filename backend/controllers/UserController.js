@@ -1,70 +1,70 @@
 const userModel = require('../models/userModel');
 const bcrypt = require('bcryptjs');
-const {generateTokenAndSetCookie} = require('../utils/generateToken')
-exports.getUsers = async (req, res)=>{
+const { getIdFromToken, generateTokenAndSetCookie } = require('../utils/generateToken')
+exports.getUsers = async (req, res) => {
     try {
         const users = await userModel.find().select("-password");
         return res.status(200).send({
-            message:"TO GO",
-            success:true,
-            users:users
+            message: "TO GO",
+            success: true,
+            users: users
         })
     } catch (error) {
         return res.status(500).send({
-            message:error.message,
-            success:false
+            message: error.message,
+            success: false
         })
-        
+
     }
 }
 
-exports.addUser = async (req,res)=>{
+exports.addUser = async (req, res) => {
     try {
-        const {fullname,email,password,role} = req.body;
+        const { fullname, email, password, role } = req.body;
 
-        const userData = await userModel.findOne({email});
+        const userData = await userModel.findOne({ email });
 
-        if(userData){
+        if (userData) {
             return res.status(201).send({
-                message:"User exist",
-                success:true
-            }) 
+                message: "User exist",
+                success: true
+            })
         }
-        
-        const hashPassword =  await bcrypt.hash(password, 10);
-        const newUser = new userModel({
-            fullname,email,password:hashPassword,role
-        })
-     
-       const users =  await newUser.save();
 
-       return res.status(500).send({
-        message:"User Added",
-        success:true,
-        users:users
-    }) 
+        const hashPassword = await bcrypt.hash(password, 10);
+        const newUser = new userModel({
+            fullname, email, password: hashPassword, role
+        })
+
+        const users = await newUser.save();
+
+        return res.status(500).send({
+            message: "User Added",
+            success: true,
+            users: users
+        })
 
     } catch (error) {
         return res.status(500).send({
-            message:error.message,
-            success:false
-        }) 
+            message: error.message,
+            success: false
+        })
     }
 }
 
 
-exports.loginUser = async (req,res)=>{
+exports.loginUser = async (req, res) => {
     try {
-        const {email,password} = req.body;
+        const { email, password } = req.body;
 
-            // validation 
-            if (!email || !password) {
-                return res.status(201).send({
-                    message: 'Please fill all fields',
-                    success: false
-                });
-            }
-        const user = await userModel.findOne({ email, status: 1  });
+        // validation 
+        if (!email || !password) {
+            return res.status(201).send({
+                message: 'Please fill all fields',
+                success: false
+            });
+        }
+        const user = await userModel.findOne({ email, status: 1 });
         if (!user) {
             return res.status(201).send({
                 message: 'Unauthorized Login',
@@ -81,44 +81,73 @@ exports.loginUser = async (req,res)=>{
                 success: false
             });
         }
-         
-         // Generate token and set cookie
-       const token =  generateTokenAndSetCookie(user._id,user.role, res);
- 
-       return res.status(200).send({
+
+        // Generate token and set cookie
+        const token = generateTokenAndSetCookie(user._id, user.role, res);
+
+        return res.status(200).send({
             message: 'User found and logged in successfully',
             success: true,
             token: token,
-            role:user.role
-       });
+            role: user.role
+        });
 
-    }catch (error) {
+    } catch (error) {
         return res.status(500).send({
-            message:error.message,
-            success:false
+            message: error.message,
+            success: false
         })
     }
 }
 
 
 
-exports.logoutUser = async (req,res)=>{
+exports.logoutUser = async (req, res) => {
     try {
-          // Clear the 'jwt' cookie
-            res.clearCookie('jwt', {
-                httpOnly: true,  // Prevents JavaScript from accessing the cookie (helps mitigate XSS)
-                sameSite: 'Strict',  // Protects against CSRF attacks
-            });
-            
-            return res.status(200).send({
-                message:"Logout successfully",
-                success:true
-            })
+        // Clear the 'jwt' cookie
+        res.clearCookie('jwt', {
+            httpOnly: true,  // Prevents JavaScript from accessing the cookie (helps mitigate XSS)
+            sameSite: 'Strict',  // Protects against CSRF attacks
+        });
+
+        return res.status(200).send({
+            message: "Logout successfully",
+            success: true
+        })
 
     } catch (error) {
         return res.status(201).send({
-            message:error.message,
-            success:false
+            message: error.message,
+            success: false
+        })
+    }
+}
+
+
+
+exports.verifyToken = async (req, res) => {
+    try {
+        const tokenData = getIdFromToken(req, res);
+        const studentId = tokenData.userId || false;
+
+        if (!studentId) {
+            return res.status(200).send({
+                message: "Invalid User",
+                success: false
+            })
+        }
+
+        return res.status(200).send({
+            message: "Vailid User",
+            success: true,
+            valid:true
+        })
+
+
+    } catch (error) {
+        return res.status(201).send({
+            message: error.message,
+            success: false
         })
     }
 }

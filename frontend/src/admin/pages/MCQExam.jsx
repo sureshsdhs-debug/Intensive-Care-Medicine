@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const MCQExam = () => {
-  const BACKEND_BASE_URL = process.env.BACKEND_BASE_URL;
+  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const navigate = useNavigate();
   const [questionData, setQuestionData] = useState([]);
   const [answers, setAnswers] = useState({});

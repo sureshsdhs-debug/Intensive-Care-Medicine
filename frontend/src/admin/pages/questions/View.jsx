@@ -4,9 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { useAuth } from '../../../auth/AuthProvider';
 const View = () => {
-  const BACKEND_BASE_URL = process.env.BACKEND_BASE_URL;
+  const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const { id } = useParams();
+  const {token} = useAuth();
   const [inputs ,setInputs] = useState({
     questiontext:"", 
     subjectid:"", 
@@ -28,8 +30,10 @@ const View = () => {
 
   const fetchQuestion = async ()=>{
     try {
-      const {data} = await axios.put(`${BACKEND_BASE_URL}/api/question/view/${id}`);
-       console.log(data);
+      const {data} = await axios.put(`${BACKEND_BASE_URL}/api/question/view/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      //  console.log(data);
        
       if(data?.success){
         setInputs({
@@ -47,7 +51,7 @@ const View = () => {
         });
       }
     } catch (error) {
-      toast.error(error)
+      toast.error(error?.response?.data?.message || "Error fetching students");
     }
   }
  
