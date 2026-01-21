@@ -365,7 +365,7 @@ SUBMIT ANSWER
                           </div>
 
                           {/* total responses (if provided) */}
-                          {totalResponses != null && totalResponses>100 && <div style={{ marginTop: 12, color: "#444", fontWeight: 600 }}>{totalResponses} Total Responses</div>}
+                          {totalResponses != null && totalResponses>5 && <div style={{ marginTop: 12, color: "#444", fontWeight: 600 }}>{totalResponses} Total Responses</div>}
 
                           {/* BACK TO QUESTION link (left side) */}
                           {isCorrect !== true && (
