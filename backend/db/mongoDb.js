@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+dotenv.config();
 
+const DB_URI = process.env.DB_URI
 const connectToMongo = () => {
-    mongoose.connect("mongodb+srv://sureshsarkar2020:0ZOCiZ3QgaNY6TWW@cluster0.wx3zupi.mongodb.net/online-exam");
+    mongoose.connect(DB_URI);
     console.log("DB Connected");   
 }
 module.exports = connectToMongo;
