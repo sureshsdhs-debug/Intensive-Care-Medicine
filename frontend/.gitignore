@@ -11,8 +11,9 @@ lerna-debug.log*
 # ===============================
 # Backend
 # ===============================
-**/node_modules/
-**/.env
+**/backend/node_modules/
+**/backend/.env*
+**/backend/uploads
 
 # ===============================
 # Frontend
