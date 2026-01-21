@@ -12,6 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const FRONTEND_URL = process.env.FRONTEND_BASE_URL || "http://localhost:5173";
 
+
 // Middleware
 app.use(
   cors({
