@@ -12,6 +12,8 @@ exports.authMiddleware = async (req, res, next) => {
     });
   }
 
+
+  
   // ✅ Extract real token
   const token = authHeader.split(" ")[1];
 

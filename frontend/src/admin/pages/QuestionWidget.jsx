@@ -270,7 +270,7 @@ SUBMIT ANSWER
   const styles = {
     containerRight: { padding: 24 },
     questionText: { fontSize: 15, marginBottom: 18, lineHeight: 1.5, fontWeight: 500 },
-    optionRow: { display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 6, marginBottom: 10, cursor: "pointer" },
+    optionRow: { display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 6, marginBottom: 10, cursor: "pointer",minHeight: 48   },
     radio: { width: 18, height: 18 },
     submitRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 18, borderTop: "1px solid #e8e8e8", paddingTop: 16 },
     item: { marginBottom: 18 },
@@ -309,7 +309,7 @@ SUBMIT ANSWER
                 {/* left image */}
                 <div className="col-lg-6 col-md-6 col-12 p-0">
                   <div className="left-image-div" style={{ padding: 24 }}>
-                    <img src={imageSrc} alt="Banner" style={{ width: "100%", height: "auto", borderRadius: 8 }} />
+                    <img src={imageSrc} alt="Question Image" style={{ width: "100%", height: "auto", borderRadius: 8,maxHeight: "240px",objectFit: "cover", }} />
                   </div>
                 </div>
 
@@ -321,7 +321,7 @@ SUBMIT ANSWER
 
                     {/* stats view */}
                     {showStats[id] ? (
-                      <div style={{ display: "flex", gap: 24 }}>
+                      <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }} >
                         <div style={{ flex: 1 }}>
                           <div className="answer-final-div">
                             <div className="answer-final-inn">

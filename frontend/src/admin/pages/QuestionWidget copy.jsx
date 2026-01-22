@@ -50,7 +50,7 @@ const QuestionWidget = () => {
       const { data } = await axios.get(
         `${BACKEND_BASE_URL}/api/result/get-thisuser-result`,
         { headers: { Authorization: `Bearer ${token}` } }
-      );
+      ); 
 
       if (Array.isArray(data)) setServerResults(data);
       else if (data?.success) setServerResults(data.resultData || []);
@@ -125,7 +125,7 @@ const QuestionWidget = () => {
        AUTO SCROLL TO NEXT UNANSWERED QUESTION
     ---------------------------------------- */
   useEffect(() => {
-    if (!questions.length || hasAutoScrolled.current) return;
+    if (!questions.length || hasAutoScrolled.current || !serverResults.length) return;
 
     const answeredIds = new Set(
       serverResults.map(r => String(r.questionid))
@@ -288,7 +288,7 @@ SUBMIT ANSWER
         const id = q._id ?? q.id ?? `q-${index}`;
         const options = ["option1", "option2", "option3", "option4"].filter(k => q[k]).map(k => ({ key: k, text: q[k] }));
         const imageSrc = q?.image && typeof q.image === "string"
-          ? (q.image.startsWith("http") ? q.image : `${BACKEND_BASE_URL}/${q.image}`)
+          ? (q.image.startsWith("http") ? q.image : `${q.image}`)
           : defaultImage;
 
         const isSubmitted = submitted.has(id);
@@ -330,16 +330,17 @@ SUBMIT ANSWER
                                 return (
                                   <div key={s.key} className="item" style={styles.item}>
                                     <div style={{ display: "flex", alignItems: "center" }}>
-                                      <div style={isActive ? styles.circleActive : styles.circle}>{isActive ? "✓" : ""}</div>
+                                      {/* <div style={isActive ? styles.circleActive : styles.circle}>{isActive ? "✓" : ""}</div> */}
+                                      <div style={isActive ? styles.circle : styles.circle}>{isActive ? "" : ""}</div>
 
                                       <div style={{ flex: 1 }}>
                                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                           <div style={{ fontSize: 16, color: "#000" }}>{s.text}</div>
-                                          {totalResponses > 50 && (
+                                          {totalResponses > 5 && (
                                             <div style={styles.percentText}>{s.percent}%</div>
                                           )}
                                         </div>
-                                        {totalResponses > 50 && (
+                                        {totalResponses > 5 && (
                                           <div style={styles.progressWrap}>
                                             <div style={{ width: `${s.percent}%`, height: "100%", background: isActive ? "#22c55e" : "#2b5db5", borderRadius: 6 }} />
                                           </div>
@@ -352,7 +353,7 @@ SUBMIT ANSWER
                                     {isActive && q.answeraudio && (
                                       <div className="audio-box" style={{ marginTop: 12 }}>
                                         <audio controls style={{ width: "100%" }}>
-                                          <source src={q.answeraudio.startsWith("http") ? q.answeraudio : `${BACKEND_BASE_URL}/${q.answeraudio}`} type="audio/mpeg" />
+                                          <source src={q.answeraudio.startsWith("http") ? q.answeraudio : `${q.answeraudio}`} type="audio/mpeg" />
                                           Your browser does not support the audio element.
                                         </audio>
                                       </div>
@@ -364,7 +365,7 @@ SUBMIT ANSWER
                           </div>
 
                           {/* total responses (if provided) */}
-                          {totalResponses != null && totalResponses && <div style={{ marginTop: 12, color: "#444", fontWeight: 600 }}>{totalResponses} Total Responses</div>}
+                          {totalResponses != null && totalResponses>5 && <div style={{ marginTop: 12, color: "#444", fontWeight: 600 }}>{totalResponses} Total Responses</div>}
 
                           {/* BACK TO QUESTION link (left side) */}
                           {isCorrect !== true && (

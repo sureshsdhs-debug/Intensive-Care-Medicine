@@ -1,0 +1,73 @@
+/* MOBILE FIRST */
+@media (max-width: 768px) {
+
+  /* Stack image & question */
+  .question-answer .row {
+    flex-direction: column;
+  }
+
+  /* Image section */
+  .left-image-div {
+    padding: 12px !important;
+  }
+
+  .left-image-div img {
+    border-radius: 6px;
+  }
+
+  /* Right content */
+  .question-answer h4 {
+    font-size: 14px !important;
+    line-height: 1.4;
+  }
+
+  /* Options */
+  .question-answer [role="button"] {
+    padding: 12px 10px !important;
+    font-size: 14px;
+  }
+
+  /* Radio button spacing */
+  .question-answer input[type="radio"] {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Submit row */
+  .question-answer .submit-row,
+  .question-answer div[style*="justify-content"] {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  /* Buttons full width */
+  .question-answer button {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Next Challenge floating button */
+  .question-answer button[style*="NEXT CHALLENGE"] {
+    width: 100%;
+    margin-top: 12px;
+  }
+
+  /* Stats view layout */
+  .answer-final-div {
+    padding: 0;
+  }
+
+  .item {
+    margin-bottom: 14px !important;
+  }
+
+  /* Progress bar */
+  .desc-box {
+    font-size: 13px;
+  }
+
+  audio {
+    width: 100%;
+  }
+}

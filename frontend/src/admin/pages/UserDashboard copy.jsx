@@ -10,6 +10,7 @@ import bannerImg from "../../assets/banner.jpg";
 import shapeImage from "../../assets/shapes.png";
 import QuestionWidget from "./QuestionWidget";
 import "../../assets/userstyle.css";
+import useAntiScreenshot from "../../hooks/useAntiScreenshot";
 
 export const UserDashboard = ({ getRole, roleAuth }) => {
   const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
@@ -18,6 +19,7 @@ export const UserDashboard = ({ getRole, roleAuth }) => {
   const [tableOfContentsData, setTableOfContents] = useState([]);
   const [isNextDisabled, setIsNextDisabled] = useState(false);
   const { token } = useAuth();
+  
 
   // call getRole once on mount
   useEffect(() => {
@@ -105,13 +107,13 @@ export const UserDashboard = ({ getRole, roleAuth }) => {
     };
   }, [pageIndex]);
 
-
   // get the table of content data 
   const fetchAllTableOfContent = async () => {
     try {
-      const { data } = await axios.get(`${BACKEND_BASE_URL}/api/table-of-contents/get-all`);
-      if (data?.success) {
-
+      const { data } = await axios.get(`${BACKEND_BASE_URL}/api/table-of-contents/get-all`,
+        { headers: { Authorization: `Bearer ${token}` } } 
+      );
+      if (data?.success) { 
         const formattedData = data.tableofcontents.map((tableofcontents, index) => ({
           id: tableofcontents._id,
           title: tableofcontents.title,
@@ -123,8 +125,6 @@ export const UserDashboard = ({ getRole, roleAuth }) => {
         formattedData.sort((a, b) => (Number(a.ordering) || 0) - (Number(b.ordering) || 0));
 
         setTableOfContents(formattedData);  // Initialize records with fetched data
-
-
       }
 
     } catch (error) {
@@ -136,35 +136,31 @@ export const UserDashboard = ({ getRole, roleAuth }) => {
     fetchAllTableOfContent();
   }, []);
 
+// ------------------------------------
+// CODE TO AVOID TO TAKE SCREENSHORT 
+// ------------------------------------
+
+ 
+
+
+const isBlurred = useAntiScreenshot({
+  maxViolations: 3,
+  onViolationLimitReached: () => {
+    toast.error("Exam terminated due to screen capture 🚫");
+    // auto submit exam
+    // logout user
+    // navigate("/exam-terminated");
+  }
+});
+
+
   return (
-    <div className="main">
-      {token && roleAuth ? (
-        <div>
-          <div className="searchbar2">
-            <input type="text" placeholder="Search" />
-            <div className="searchbtn">
-              <img
-                src="https://media.geeksforgeeks.org/wp-content/uploads/20221210180758/Untitled-design-(28).png"
-                className="icn srchicn"
-                alt="search-button"
-              />
-            </div>
-          </div>
-
-          <div className="report-container">
-            <div className="report-header">
-              <h1 className="recent-Articles">
-                <i className="bi bi-people"></i> Stutents
-              </h1>
-              <button className="view">View All</button>
-            </div>
-
-            <div className="report-body">
-              {/* Your table / records here */}
-            </div>
-          </div>
-        </div>
-      ) : (
+    <div className="main" style={{
+    filter: isBlurred ? "blur(10px)" : "none",
+    pointerEvents: isBlurred ? "none" : "auto",
+    transition: "filter 0.2s ease"
+  }}>
+      {token && !roleAuth && ( 
         <div>
           <div className="pager">
             <section className="page active front-page-div">
