@@ -58,8 +58,8 @@ const Edit = () => {
         });
  
         // set existing urls if present (make sure backend returns relative path like "uploads/..." or full URL)
-        setExistingImageUrl(data.question.image ? `${BACKEND_BASE_URL}/${data.question.image}` : "");
-        setExistingAudioUrl( data.question.answeraudio ? `${BACKEND_BASE_URL}/${data.question.answeraudio}` : "" );
+        setExistingImageUrl(data.question.image ? `${data.question.image}` : "");
+        setExistingAudioUrl( data.question.answeraudio ? `${data.question.answeraudio}` : "" );
 
         // clear previews
         setImageFile(null);

@@ -4,10 +4,11 @@ const fs = require('fs');
 const path = require('path');
 const { deleteUploadedFile } = require('../helpers/fileHelper');
 const { getIdFromToken } = require("../utils/generateToken");
+const cloudinary = require("../utils/cloudinary");
+
 
 exports.addQuestion = async (req, res) => {
   try {
-    // read fields from body
     const {
       questiontype,
       questiontext,
@@ -16,38 +17,56 @@ exports.addQuestion = async (req, res) => {
       option3,
       option4,
       correctoption,
-      status
+      status,
     } = req.body;
 
-
-
-
-    // validate required fields
-    if (!questiontype || !questiontext || !option1 || !option2 || !option3 || !option4 || !correctoption) {
-      return res.status(400).send({
+    // 1️⃣ Validate required fields
+    if (
+      !questiontype ||
+      !questiontext ||
+      !option1 ||
+      !option2 ||
+      !option3 ||
+      !option4 ||
+      !correctoption
+    ) {
+      return res.status(400).json({
+        success: false,
         message: "Please fill all required fields",
-        success: false
       });
     }
 
-    // duplicate check (use findOne and trim for safety)
-    const existing = await questionModel.findOne({ questiontext: questiontext.trim() });
+    // 2️⃣ Duplicate check
+    const existing = await questionModel.findOne({
+      questiontext: questiontext.trim(),
+    });
+
     if (existing) {
-      return res.status(409).send({
+      return res.status(409).json({
+        success: false,
         message: "This question already exists",
-        success: false
       });
     }
 
-    // Build image URL if file uploaded by multer (routes must use upload.single('image'))
-    let imageUrl = "";
-    if (req.file && req.file.filename) {
-      const host = req.protocol + '://' + req.get('host'); // e.g. http://localhost:5000
-      // imageUrl = `${host}/uploads/${req.file.filename}`;
-      imageUrl = `uploads/${req.file.filename}`;
+    // 3️⃣ Handle image upload (Cloudinary)
+    let image = "";
+    let image_public_id = "";
+
+    if (req.files?.image?.[0]) {
+      image = req.files.image[0].path;          // Cloudinary URL
+      image_public_id = req.files.image[0].filename; // Public ID
     }
 
-    // create question
+    // 4️⃣ Handle answer audio (optional)
+    let answeraudio = "";
+    let audio_public_id = "";
+
+    if (req.files?.answeraudio?.[0]) {
+      answeraudio = req.files.answeraudio[0].path;
+      audio_public_id = req.files.answeraudio[0].filename;
+    }
+
+    // 5️⃣ Create question
     const newQuestion = new questionModel({
       questiontype,
       questiontext: questiontext.trim(),
@@ -56,26 +75,26 @@ exports.addQuestion = async (req, res) => {
       option3,
       option4,
       correctoption,
-      image: imageUrl,
-      status: status ? Number(status) : 1
+      image,
+      image_public_id,
+      answeraudio,
+      audio_public_id,
+      status: status ? Number(status) : 1,
     });
 
     await newQuestion.save();
 
-    return res.status(201).send({
-      message: "Question successfully added",
+    return res.status(201).json({
       success: true,
-      newQuestion
+      message: "Question successfully added",
+      newQuestion,
     });
-
   } catch (error) {
-    console.error('addQuestion error:', error);
+    console.error("addQuestion error:", error);
 
-    // Example: handle multer file-size/type errors (they might come here)
-    const msg = error.message || "Server error";
-    return res.status(500).send({
-      message: msg,
-      success: false
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Server error",
     });
   }
 };
@@ -122,98 +141,47 @@ exports.allQuestion = async (req, res) => {
 
 exports.editQuestion = async (req, res) => {
   try {
-    const id = req.params.id;
-    if (!id) return res.status(400).send({ message: "No id provided", success: false });
+    const { id } = req.params;
 
-    // Fetch existing question
     const question = await questionModel.findById(id);
-    if (!question) return res.status(404).send({ message: "Question not found", success: false });
+    if (!question)
+      return res.status(404).json({ success: false, message: "Question not found" });
 
-    // Fields from body
-    const {
-      questiontype,
-      questiontext,
-      option1,
-      option2,
-      option3,
-      option4,
-      correctoption,
-      status
-    } = req.body;
+    const updateData = { ...req.body };
 
-    // If client only requested the current data (some of your flows do this), return it
-    if (
-      !questiontype ||
-      !questiontext ||
-      !option1 ||
-      !option2 ||
-      !option3 ||
-      !option4 ||
-      !correctoption ||
-      typeof status === 'undefined'
-    ) {
-      return res.status(200).send({ message: "Got the question data", success: true, question });
+    // IMAGE
+    if (req.files?.image?.[0]) {
+      if (question.image_public_id) {
+        await cloudinary.uploader.destroy(question.image_public_id);
+      }
+
+      updateData.image = req.files.image[0].path;
+      updateData.image_public_id = req.files.image[0].filename;
     }
 
-    // Duplicate check excluding current id
-    const duplicate = await questionModel.findOne({
-      questiontext: questiontext.trim(),
-      _id: { $ne: id }
+    // AUDIO
+    if (req.files?.answeraudio?.[0]) {
+      if (question.audio_public_id) {
+        await cloudinary.uploader.destroy(question.audio_public_id, {
+          resource_type: "video",
+        });
+      }
+
+      updateData.answeraudio = req.files.answeraudio[0].path;
+      updateData.audio_public_id = req.files.answeraudio[0].filename;
+    }
+
+    const updated = await questionModel.findByIdAndUpdate(id, updateData, {
+      new: true,
     });
-    if (duplicate) return res.status(409).send({ message: "This question already exists", success: false });
 
-    // Prepare update object
-    const updateData = {
-      questiontype,
-      questiontext: questiontext.trim(),
-      option1,
-      option2,
-      option3,
-      option4,
-      correctoption,
-      status: Number(status)
-    };
-
-    // Handle image
-    if (req.files && req.files.image && req.files.image.length > 0) {
-      try {
-        if (question.image) {
-          deleteUploadedFile(question.image);
-        }
-      } catch (delErr) {
-        console.warn('Error deleting previous image (ignored):', delErr && delErr.message ? delErr.message : delErr);
-      }
-      // store relative path (same pattern you used)
-      updateData.image = `uploads/${req.files.image[0].filename}`;
-    }
-
-    // Handle answeraudio (NEW)
-    if (req.files && req.files.answeraudio && req.files.answeraudio.length > 0) {
-      try {
-        if (question.answeraudio) {
-          deleteUploadedFile(question.answeraudio);
-        }
-      } catch (delErr) {
-        console.warn('Error deleting previous audio (ignored):', delErr && delErr.message ? delErr.message : delErr);
-      }
-      updateData.answeraudio = `uploads/${req.files.answeraudio[0].filename}`;
-    }
-
-
-    // Update and return the new document
-    const updated = await questionModel.findByIdAndUpdate(id, updateData, { new: true });
-
-    return res.status(200).send({
-      message: "Question updated successfully",
+    res.status(200).json({
       success: true,
-      question: updated
+      message: "Question updated successfully",
+      question: updated,
     });
   } catch (error) {
-    console.error('editQuestion error:', error);
-    return res.status(500).send({
-      message: error.message || "Server error",
-      success: false
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 

@@ -59,7 +59,9 @@ const createSchema = new mongoose.Schema({
         enum: [1, 2]  // Assuming 2 is inactive, 1 is active
     },
     image: { type: String, default: "" },
+    image_public_id: { type: String, default: "" },
     answeraudio: { type: String, default: "" },
+    audio_public_id: { type: String, default: "" },
 }, { timestamps: true });
 
 

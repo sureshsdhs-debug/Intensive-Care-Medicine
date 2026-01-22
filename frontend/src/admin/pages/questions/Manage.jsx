@@ -19,7 +19,7 @@ const Manage = () => {
     {
       name: "Image",
       cell: (row) => (
-        <img src={row.image ? `${BACKEND_BASE_URL}/${row.image}` : noImgage} alt="question" style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "5px" }} />), sortable: false
+        <img src={row.image ? `${row.image}` : noImgage} alt="question" style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "5px" }} />), sortable: false
     },
     { name: "Question", selector: (row) => row.questiontext, sortable: true },
     { name: "Question Type", selector: (row) => row.questiontype, sortable: true },

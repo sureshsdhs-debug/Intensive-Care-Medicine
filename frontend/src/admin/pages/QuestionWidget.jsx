@@ -288,7 +288,7 @@ SUBMIT ANSWER
         const id = q._id ?? q.id ?? `q-${index}`;
         const options = ["option1", "option2", "option3", "option4"].filter(k => q[k]).map(k => ({ key: k, text: q[k] }));
         const imageSrc = q?.image && typeof q.image === "string"
-          ? (q.image.startsWith("http") ? q.image : `${BACKEND_BASE_URL}/${q.image}`)
+          ? (q.image.startsWith("http") ? q.image : `${q.image}`)
           : defaultImage;
 
         const isSubmitted = submitted.has(id);
@@ -353,7 +353,7 @@ SUBMIT ANSWER
                                     {isActive && q.answeraudio && (
                                       <div className="audio-box" style={{ marginTop: 12 }}>
                                         <audio controls style={{ width: "100%" }}>
-                                          <source src={q.answeraudio.startsWith("http") ? q.answeraudio : `${BACKEND_BASE_URL}/${q.answeraudio}`} type="audio/mpeg" />
+                                          <source src={q.answeraudio.startsWith("http") ? q.answeraudio : `${q.answeraudio}`} type="audio/mpeg" />
                                           Your browser does not support the audio element.
                                         </audio>
                                       </div>
