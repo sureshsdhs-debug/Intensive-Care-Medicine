@@ -303,13 +303,13 @@ SUBMIT ANSWER
         const totalResponses = q.totalResponses ?? q.totalResponsesCount ?? q.statsTotal ?? null;
 
         return (
-          <section id={`q-${id}`} className="page front-page-div question-answer" key={id} style={{ marginBottom: 28 }}>
+          <section id={`q-${id}`} className="page front-page-div question-answer" key={id} style={{ marginBottom: 31 }}>
             <div className="container-fluid p-0">
               <div className="row">
                 {/* left image */}
                 <div className="col-lg-6 col-md-6 col-12 p-0">
                   <div className="left-image-div" style={{ padding: 24 }}>
-                    <img src={imageSrc} alt="Question Image" style={{ width: "100%", height: "auto", borderRadius: 8,maxHeight: "240px",objectFit: "cover", }} />
+                    <img src={imageSrc} alt="Question Image" style={{ width: "100%", height: "auto", borderRadius: 8,objectFit: "cover", }} />
                   </div>
                 </div>
 
@@ -430,7 +430,7 @@ SUBMIT ANSWER
                             </a>
                           )}
                           {!isSubmitted ? (
-                            <button
+                            <button className="submitbuttoncls"
                               onClick={() => submitAnswer(q)}
                               disabled={!sel}
                               style={{

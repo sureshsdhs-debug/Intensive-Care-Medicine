@@ -192,11 +192,12 @@ body {
 
 /* Controls */
 .controls {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
+    position: fixed;   /* makes it sticky to viewport */
+    bottom: 15px;
+    right: 15px;
     display: flex;
     gap: 10px;
+    z-index: 1000; 
 }
 
 .btn {
@@ -343,9 +344,6 @@ body {
     font-weight: 800;
     color: #000;
 }
-
-
-
 
 
 .table-content h2 span {
@@ -557,32 +555,66 @@ body {
    MOBILE FIX FOR QUESTION PAGE
    =========================== */
 @media (max-width: 768px) {
+ 
 
+    
   html,
   body {
-    height: auto !important;
-    overflow-y: auto !important;
+    height: 100vh;
+    overflow: hidden; /* page should not scroll */
   }
 
   .pager {
-    height: auto !important;
-    overflow: visible !important;
+    height: 100vh;
+    overflow: hidden;
   }
 
   .page {
-    height: auto !important;
-    min-height: auto !important;
+    height: 100vh;
+    display: none;
   }
 
+  .page.active {
+    display: block;
+  }
+
+  /* 🔥 Scrollable Question Area */
   .question-answer {
-    height: auto !important;
+    height: calc(100vh - 70px); /* leave space for buttons */
+    overflow-y: auto;
     display: block !important;
     padding: 16px !important;
   }
+ 
+
+  .controls {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    z-index: 9999;
+  }
+  .submitbuttoncls{
+    min-width: 108px !important;
+    padding: 10px 5px !important;
+  }
+/* ---------------- */
+ 
 
   .left-image-div {
     height: auto !important;
   }
+
+  .right-content-div { 
+    height: auto; 
+}
+
+.right-content-div h2 { 
+    font-size: 35px;
+}
+
+.right-content-div h6 { 
+    font-size: 18px; 
+}
 
   .left-image-div img {
     height: auto !important;
