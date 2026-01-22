@@ -35,11 +35,13 @@ const Header = ({ getRole }) => {
       } else {
         response = await axios.get(
           `${BACKEND_BASE_URL}/api/student/logout`,
-          { withCredentials: true }
+          // { withCredentials: true }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
       } 
       const { data } = response; 
-      
+      // console.log(data);
+      // return false
       if (data?.success) {
         toast.success(data.message);
         logoutAction(); // clear auth from context
