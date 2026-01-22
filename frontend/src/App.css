@@ -439,8 +439,17 @@ border-radius: 4px;
         justify-content: space-between; 
     } 
     .logo { 
-        font-size: 20px; 
+        font-size: 16px; 
     } 
+    .logout-btn{
+        font-size: 16px;
+        display: flex;
+        padding: 6px;
+    }
+    .second-page-div{
+        display: block !important;
+        overflow-y: scroll;
+    }
     .menuicn { 
         height: 25px; 
     } 

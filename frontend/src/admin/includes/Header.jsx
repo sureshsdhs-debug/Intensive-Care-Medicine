@@ -64,7 +64,7 @@ const Header = ({ getRole }) => {
       {/* Logout Button */}
 
       <button onClick={handleLogout} className="logout-btn">
-        <i className="bi bi-box-arrow-right"></i> Logout
+        <i className="bi bi-box-arrow-right"></i>   Logout
       </button>
 
     </header>
