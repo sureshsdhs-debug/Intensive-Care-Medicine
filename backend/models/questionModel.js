@@ -14,38 +14,43 @@ const createSchema = new mongoose.Schema({
     questiontext: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim: true,
     },
     questiontype: {
         type: String,
+        enum: ["Single Question", "Multiple Question"],
         default: "Single Question",
         required: true,
     },
-    option1: {
-        type: String,
-        required: true
-    },
-    option2: {
-        type: String,
-        required: true
-    },
-    option3: {
-        type: String,
-        required: true
-    },
-    option4: {
-        type: String,
-        required: true
-    },
+    option1: { type: String, required: true },
+    option2: { type: String, required: true },
+    option3: { type: String, required: true },
+    option4: { type: String, required: true },
+    option5: { type: String, default: "" },
+
     correctoption: {
+        type: [String], // ALWAYS ARRAY
+        required: true,
+        default:[],
+        validate: {
+            validator: function (arr) {
+                return arr.length > 0;
+            },
+            message: "At least one correct option is required",
+        },
+    },
+
+    answerreason: {
         type: String,
-        required: true
+        default: ""
     },
     stats: {
         option1: { type: Number, default: 0 },
         option2: { type: Number, default: 0 },
         option3: { type: Number, default: 0 },
         option4: { type: Number, default: 0 },
+        option5: { type: Number, default: 0 },
     },
 
     totalResponses: {
@@ -55,8 +60,8 @@ const createSchema = new mongoose.Schema({
     status:
     {
         type: Number,
+        enum: [1, 2],  // Assuming 2 is inactive, 1 is active
         default: 1,
-        enum: [1, 2]  // Assuming 2 is inactive, 1 is active
     },
     image: { type: String, default: "" },
     image_public_id: { type: String, default: "" },

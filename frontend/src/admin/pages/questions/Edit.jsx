@@ -10,7 +10,7 @@ const Edit = () => {
     import.meta.env.VITE_BACKEND_BASE_URL || "http://localhost:5000";
   const { id } = useParams();
   const navigate = useNavigate();
-  const {token} = useAuth();
+  const { token } = useAuth();
 
   const [loading, setLoading] = useState(false);
 
@@ -31,57 +31,75 @@ const Edit = () => {
     option2: "",
     option3: "",
     option4: "",
-    correctoption: "option1",
+    option5: "",
+    correctoption: [],
+    answerreason: "",
     // we do not store binary audio here; backend returns path/url
   });
 
 
 
-  const getQuestionById = async()=>{
+  const getQuestionById = async () => {
     try {
-      const {data} = await axios.put(`${BACKEND_BASE_URL}/api/question/edit/${id}`,{}, 
+      const { data } = await axios.put(`${BACKEND_BASE_URL}/api/question/edit/${id}`, {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
-      if(data?.success){
+
+      if (data?.success) {
+        const correct = data.question.correctoption;
+        // console.log(data.question);
         setInputs({
-          questiontext: data.question.questiontext, 
+          questiontext: data.question.questiontext,
           questiontype: data.question.questiontype,
           option1: data.question.option1,
           option2: data.question.option2,
           option3: data.question.option3,
           option4: data.question.option4,
-          correctoption: data.question.correctoption,
+          option5: data.question.option5,
+          // correctoption: data.question.correctoption,
+          correctoption: Array.isArray(correct) ? correct : correct ? [correct] : [],
+
           status: data.question.status,
           answeraudio: data.question.answeraudio,
-          
+          answerreason: data.question.answerreason,
+
         });
- 
+
         // set existing urls if present (make sure backend returns relative path like "uploads/..." or full URL)
         setExistingImageUrl(data.question.image ? `${data.question.image}` : "");
-        setExistingAudioUrl( data.question.answeraudio ? `${data.question.answeraudio}` : "" );
+        setExistingAudioUrl(data.question.answeraudio ? `${data.question.answeraudio}` : "");
 
         // clear previews
         setImageFile(null);
         setImagePreview(null);
         setAudioFile(null);
-        setAudioPreviewUrl(null); 
+        setAudioPreviewUrl(null);
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || "Error fetching students");
     }
   }
- 
- 
+
 
   useEffect(() => {
-    getQuestionById(); 
-  }, [id,token]);
+    getQuestionById();
+  }, [id, token]);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setInputs((prev) => ({ ...prev, [name]: value }));
   };
+
+  const handleMultiCorrectChange = (e) => {
+    const selected = Array.from(e.target.selectedOptions, opt => opt.value);
+
+    setInputs(prev => ({
+      ...prev,
+      correctoption: selected, // ✅ ARRAY
+    }));
+  };
+
 
   // image input change
   const handleImageChange = (e) => {
@@ -135,6 +153,13 @@ const Edit = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (inputs.correctoption == '') {
+      toast.error("Select at least one correct option");
+      return;
+    }
+
+
     try {
       setLoading(true);
 
@@ -146,7 +171,19 @@ const Edit = () => {
       formData.append("option2", inputs.option2);
       formData.append("option3", inputs.option3);
       formData.append("option4", inputs.option4);
-      formData.append("correctoption", inputs.correctoption);
+      formData.append("option5", inputs.option5);
+      // formData.append("correctoption", inputs.correctoption);
+
+      if (inputs.questiontype === "Multiple Question") {
+        inputs.correctoption.forEach((opt) =>
+          formData.append("correctoption[]", opt)
+        );
+      } else {
+        formData.append("correctoption", inputs.correctoption[0] || "");
+      }
+
+
+      formData.append("answerreason", inputs.answerreason);
 
       // append files if selected
       if (imageFile) {
@@ -206,7 +243,7 @@ const Edit = () => {
           <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="row">
               <div className="col-md-12 mb-3">
-                <label>Question Text *</label>
+                <label>Question Text <span className="text-danger"><b>*</b></span></label>
                 <input
                   type="text"
                   className="form-control"
@@ -222,8 +259,16 @@ const Edit = () => {
                 <select
                   name="questiontype"
                   className="form-select"
-                  onChange={handleChange}
                   value={inputs.questiontype}
+                  onChange={(e) => {
+                    const value = e.target.value;
+
+                    setInputs((prev) => ({
+                      ...prev,
+                      questiontype: value,
+                      correctoption: [], // ✅ reset ONLY when user changes type
+                    }));
+                  }}
                 >
                   <option value="Single Question">Single Question</option>
                   <option value="Multiple Question">Multiple Question</option>
@@ -243,8 +288,8 @@ const Edit = () => {
                 </select>
               </div>
 
-              <div className="col-md-3 mb-3">
-                <label>Option 1 *</label>
+              <div className="col-md-2 mb-3">
+                <label>Option 1 <span className="text-danger"><b>*</b></span></label>
                 <input
                   name="option1"
                   type="text"
@@ -254,8 +299,8 @@ const Edit = () => {
                   required
                 />
               </div>
-              <div className="col-md-3 mb-3">
-                <label>Option 2 *</label>
+              <div className="col-md-2 mb-3">
+                <label>Option 2 <span className="text-danger"><b>*</b></span></label>
                 <input
                   name="option2"
                   type="text"
@@ -265,8 +310,8 @@ const Edit = () => {
                   required
                 />
               </div>
-              <div className="col-md-3 mb-3">
-                <label>Option 3 *</label>
+              <div className="col-md-2 mb-3">
+                <label>Option 3 <span className="text-danger"><b>*</b></span></label>
                 <input
                   name="option3"
                   type="text"
@@ -276,8 +321,8 @@ const Edit = () => {
                   required
                 />
               </div>
-              <div className="col-md-3 mb-3">
-                <label>Option 4 *</label>
+              <div className="col-md-2 mb-3">
+                <label>Option 4 <span className="text-danger"><b>*</b></span></label>
                 <input
                   name="option4"
                   type="text"
@@ -287,25 +332,84 @@ const Edit = () => {
                   required
                 />
               </div>
-
-              <div className="col-md-4 mb-3">
-                <label>Correct Option *</label>
-                <select
-                  name="correctoption"
-                  className="form-select"
+              <div className="col-md-2 mb-3">
+                <label>Option 5 </label>
+                <input
+                  name="option5"
+                  type="text"
+                  className="form-control"
                   onChange={handleChange}
-                  value={inputs.correctoption}
-                  required
-                >
-                  <option value="option1">Option1</option>
-                  <option value="option2">Option2</option>
-                  <option value="option3">Option3</option>
-                  <option value="option4">Option4</option>
-                </select>
+                  value={inputs.option5}
+                />
               </div>
 
+              <div className="col-md-12 mb-3">
+                <label>
+                  Correct Option <span className="text-danger"><b>*</b></span>
+                </label>
+
+                {inputs.questiontype === "Multiple Question" ? (
+                  // ✅ MULTIPLE (CHECKBOX)
+                  ["option1", "option2", "option3", "option4", "option5"].map((opt) =>
+                    inputs[opt] ? (
+                      <div className="form-check" key={opt}>
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          id={`correct-${opt}`}
+                          checked={inputs.correctoption.includes(opt)}
+                          onChange={(e) => {
+                            setInputs((prev) => ({
+                              ...prev,
+                              correctoption: e.target.checked
+                                ? [...prev.correctoption, opt]
+                                : prev.correctoption.filter((o) => o !== opt),
+                            }));
+                          }}
+                        />
+                        <label className="form-check-label" htmlFor={`correct-${opt}`}>
+                          {inputs[opt]}
+                        </label>
+                      </div>
+                    ) : null
+                  )
+                ) : (
+                  // ✅ SINGLE (RADIO)
+                  ["option1", "option2", "option3", "option4", "option5"].map((opt) =>
+                    inputs[opt] ? (
+                      <div className="form-check" key={opt}>
+                        <input
+                          type="radio"
+                          id={`correct-${opt}`}
+                          name="correctoption"
+                          value={opt}
+                          className="form-check-input"
+                          checked={inputs.correctoption.includes(opt)}   // ✅ FIX
+                          onChange={() => {
+                            setInputs((prev) => ({
+                              ...prev,
+                              correctoption: [opt],                       // ✅ always array
+                            }));
+                          }}
+                        />
+                        <label className="form-check-label" htmlFor={`correct-${opt}`}>
+                          {inputs[opt]}
+                        </label>
+                      </div>
+                    ) : null
+                  )
+
+
+
+
+                )}
+              </div>
+
+
+
+
               {/* Image upload */}
-              <div className="col-md-4 mb-3">
+              <div className="col-md-3 mb-3">
                 <label>Question Image (optional)</label>
                 <input
                   type="file"
@@ -340,7 +444,7 @@ const Edit = () => {
               </div>
 
               {/* Audio upload */}
-              <div className="col-md-4 mb-3">
+              <div className="col-md-3 mb-3">
                 <label>Answer Audio (optional)</label>
                 <input
                   type="file"
@@ -370,6 +474,25 @@ const Edit = () => {
                   </div>
                 ) : null}
               </div>
+
+
+
+
+
+              <div className="col-md-6 mb-3">
+                <label> Answer Reason (optional)</label>
+                <input
+                  id="answerreason"
+                  type="text"
+                  className="form-control"
+                  name="answerreason"
+                  onChange={handleChange}
+                  value={inputs.answerreason}
+                  placeholder=""
+                />
+              </div>
+
+
             </div>
 
             <button type="submit" className="btn btn-primary" disabled={loading}>

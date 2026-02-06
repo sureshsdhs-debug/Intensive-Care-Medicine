@@ -322,10 +322,10 @@ cursor: pointer;
     color: #fff;
 }
 .report-body { 
-max-width: 1000px; 
+/* max-width: 1000px;  */
 overflow-x: auto; 
 padding: 20px; 
-margin: auto;
+/* margin: auto; */
 } 
 .report-topic-heading, 
 .item1 { 

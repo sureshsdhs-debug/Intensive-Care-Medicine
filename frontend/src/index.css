@@ -66,9 +66,18 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+.reason-text{
+      font-size: 13px;
+}
 
 
+.correct-multi-select {
+  min-height: 120px;      /* control height */
+  padding: 8px;
+}
 
-
-
+.correct-multi-select option {
+  padding: 8px;
+  font-size: 14px;
+}
 

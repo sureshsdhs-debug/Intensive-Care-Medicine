@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import defaultImage from "../../assets/banner.jpg";
+// import defaultImage from "../../assets/banner.jpg";
 import { useUser } from "../../context/UserContext";
 
 
@@ -25,14 +25,14 @@ const QuestionWidget = () => {
   const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const { userId } = useUser();
   const [serverResults, setServerResults] = useState([]);
- 
+
   const fetchAllQuestion = useCallback(async () => {
     try {
       const { data } = await axios.get(
         `${BACKEND_BASE_URL}/api/question/get-all`,
         { headers: { Authorization: `Bearer ${token}` } }
-      ); 
-      
+      );
+
       if (data?.success) setQuestions(data.question || []);
       else toast.error("Failed to fetch questions");
     } catch (err) {
@@ -43,14 +43,15 @@ const QuestionWidget = () => {
   useEffect(() => {
     fetchAllQuestion();
   }, []);
- 
+
 
   const fetchThisUserResult = useCallback(async () => {
     try {
       const { data } = await axios.get(
         `${BACKEND_BASE_URL}/api/result/get-thisuser-result`,
         { headers: { Authorization: `Bearer ${token}` } }
-      ); 
+      );
+      // console.log(data.resultData);
 
       if (Array.isArray(data)) setServerResults(data);
       else if (data?.success) setServerResults(data.resultData || []);
@@ -59,7 +60,7 @@ const QuestionWidget = () => {
       toast.error("Error fetching user results");
     }
   }, [BACKEND_BASE_URL, token]);
- 
+
 
   useEffect(() => {
     if (token) fetchThisUserResult();
@@ -168,23 +169,52 @@ SUBMIT ANSWER
 
   const submitAnswer = async (q) => {
     const id = q._id;
+    const isMultiple = q.questiontype === "Multiple Question";
     if (submitted.has(id)) return;
 
     const answer = selected[id];
-    if (!answer) {
-      toast.error("Please choose an option first");
+    if (
+      (!isMultiple && !answer) ||
+      (isMultiple && (!Array.isArray(answer) || answer.length === 0))
+    ) {
+      toast.error("Please choose at least one option");
       return;
     }
 
-    const selectedoption = Object.keys(q).find(k => q[k] === answer);
+    let selectedoption;
+
+    if (!isMultiple) {
+      selectedoption = Object.keys(q).find(k => q[k] === answer);
+    } else {
+      selectedoption = answer.map(val =>
+        Object.keys(q).find(k => q[k] === val)
+      );
+    }
 
     submitInToDB({ questionid: id, selectedoption });
 
     const correctValue = resolveCorrectValue(q);
-    const isCorrect =
-      answer && correctValue
-        ? String(answer).trim() === String(correctValue).trim()
-        : null;
+
+
+    let isCorrect = null;
+
+    if (!isMultiple) {
+      isCorrect =
+        answer && correctValue
+          ? String(answer).trim() === String(correctValue).trim()
+          : null;
+    } else {
+      const correctKeys = Array.isArray(q.correctoption)
+        ? q.correctoption
+        : [q.correctoption];
+
+      const selectedKeys = selectedoption || [];
+
+      isCorrect =
+        correctKeys.length === selectedKeys.length &&
+        correctKeys.every(k => selectedKeys.includes(k));
+    }
+
 
     setSubmitted(prev => new Set(prev).add(id));
     setResults(prev => ({ ...prev, [id]: { isCorrect, correctValue } }));
@@ -196,13 +226,34 @@ SUBMIT ANSWER
   };
 
 
- 
 
-  const handleSelect = (qId, value) => {
+
+  const handleSelect = (qId, value, isMultiple) => {
     if (submitted.has(qId)) return;
-    setSelected(prev => ({ ...prev, [qId]: value }));
+
+    setSelected(prev => {
+      const current = prev[qId];
+
+      if (!isMultiple) {
+        // SINGLE QUESTION
+        return { ...prev, [qId]: value };
+      }
+
+      // MULTIPLE QUESTION
+      const arr = Array.isArray(current) ? current : [];
+      const exists = arr.includes(value);
+
+      return {
+        ...prev,
+        [qId]: exists
+          ? arr.filter(v => v !== value) // uncheck
+          : [...arr, value]              // check
+      };
+    });
   };
- 
+
+
+
 
   const tryAgain = (qId) => {
     setSubmitted(prev => {
@@ -241,7 +292,7 @@ SUBMIT ANSWER
   const buildStats = (q) => {
     if (q.stats && typeof q.stats === "object") {
       const stats = [];
-      ["option1", "option2", "option3", "option4"].forEach(k => {
+      ["option1", "option2", "option3", "option4", "option5"].forEach(k => {
         if (q[k]) stats.push({ key: k, text: q[k], percent: Number(q.stats[k]) || 0 });
       });
       const total = stats.reduce((s, it) => s + it.percent, 0);
@@ -255,7 +306,7 @@ SUBMIT ANSWER
       return stats;
     }
 
-    const keys = ["option1", "option2", "option3", "option4"].filter(k => q[k]);
+    const keys = ["option1", "option2", "option3", "option4", "option5"].filter(k => q[k]);
     if (!keys.length) return [];
     // sample distribution for 4 options (like your screenshots)
     if (keys.length === 4) {
@@ -270,7 +321,7 @@ SUBMIT ANSWER
   const styles = {
     containerRight: { padding: 24 },
     questionText: { fontSize: 15, marginBottom: 18, lineHeight: 1.5, fontWeight: 500 },
-    optionRow: { display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 6, marginBottom: 10, cursor: "pointer",minHeight: 48   },
+    optionRow: { display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 6, marginBottom: 10, cursor: "pointer", minHeight: 48 },
     radio: { width: 18, height: 18 },
     submitRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 18, borderTop: "1px solid #e8e8e8", paddingTop: 16 },
     item: { marginBottom: 18 },
@@ -285,11 +336,14 @@ SUBMIT ANSWER
   return (
     <div>
       {questions.map((q, index) => {
+        const correctOptionKey = q.correctoption; // e.g. "option2" 
+        
+        const isMultiple = q.questiontype === "Multiple Question";
         const id = q._id ?? q.id ?? `q-${index}`;
-        const options = ["option1", "option2", "option3", "option4"].filter(k => q[k]).map(k => ({ key: k, text: q[k] }));
+        const options = ["option1", "option2", "option3", "option4", "option5"].filter(k => q[k]).map(k => ({ key: k, text: q[k] }));
         const imageSrc = q?.image && typeof q.image === "string"
           ? (q.image.startsWith("http") ? q.image : `${q.image}`)
-          : defaultImage;
+          : null;
 
         const isSubmitted = submitted.has(id);
         const sel = selected[id];
@@ -302,19 +356,23 @@ SUBMIT ANSWER
         // optional total responses
         const totalResponses = q.totalResponses ?? q.totalResponsesCount ?? q.statsTotal ?? null;
 
+
+        const canSubmit = isMultiple ? Array.isArray(sel) && sel.length > 0 : !!sel;
+
         return (
           <section id={`q-${id}`} className="page front-page-div question-answer" key={id} style={{ marginBottom: 31 }}>
             <div className="container-fluid p-0">
               <div className="row">
                 {/* left image */}
-                <div className="col-lg-6 col-md-6 col-12 p-0">
-                  <div className="left-image-div" style={{ padding: 24 }}>
-                    <img src={imageSrc} alt="Question Image" style={{ width: "100%", height: "auto", borderRadius: 8,objectFit: "cover", }} />
+                {imageSrc != null && (
+                  <div className="col-lg-6 col-md-6 col-12 p-0">
+                    <div className="left-image-div" style={{ padding: 24 }}>
+                      <img src={imageSrc} alt="Question Image" style={{ width: "100%", height: "auto", borderRadius: 8, objectFit: "cover", }} />
+                    </div>
                   </div>
-                </div>
-
+                )}
                 {/* right column */}
-                <div className="col-lg-6 col-md-6 col-12 p-0">
+                <div className={`${(imageSrc != null) ? "col-lg-6 col-md-6 col-12" : "col-lg-12 col-md-12 col-12"} p-0`}>
                   <div style={styles.containerRight}>
                     {/* question text always on top */}
                     <h4 style={styles.questionText}>{q.questiontext}</h4>
@@ -326,46 +384,97 @@ SUBMIT ANSWER
                           <div className="answer-final-div">
                             <div className="answer-final-inn">
                               {stats.map((s) => {
-                                const isActive = s.key === top.key;
+                                // const isCorrectOption = s.key === correctOptionKey;
+
+                                const isCorrectOption = isMultiple ? q.correctoption.includes(s.key) : s.key === correctOptionKey[0];
                                 return (
                                   <div key={s.key} className="item" style={styles.item}>
                                     <div style={{ display: "flex", alignItems: "center" }}>
-                                      {/* <div style={isActive ? styles.circleActive : styles.circle}>{isActive ? "✓" : ""}</div> */}
-                                      <div style={isActive ? styles.circle : styles.circle}>{isActive ? "" : ""}</div>
+                                      <div style={isCorrectOption ? styles.circle : styles.circle}>{isCorrectOption ? "" : ""}</div>
 
                                       <div style={{ flex: 1 }}>
                                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                          <div style={{ fontSize: 16, color: "#000" }}>{s.text}</div>
-                                          {totalResponses > 5 && (
-                                            <div style={styles.percentText}>{s.percent}%</div>
+                                          <div style={{ fontSize: 16, color: "#000" }}> {s.text} </div>
+                                          {totalResponses >= 0 && (
+                                            <div style={styles.percentText}> &nbsp; {s.percent}% </div>
                                           )}
                                         </div>
-                                        {totalResponses > 5 && (
+                                        {totalResponses >= 0 && (
                                           <div style={styles.progressWrap}>
-                                            <div style={{ width: `${s.percent}%`, height: "100%", background: isActive ? "#22c55e" : "#2b5db5", borderRadius: 6 }} />
+                                            <div style={{ width: `${s.percent}%`, height: "100%", background: (isSubmitted && isCorrect === true && isCorrectOption) ? "#22c55e" : "#2b5db5", borderRadius: 6 }} />
                                           </div>
                                         )}
                                       </div>
                                     </div>
 
-                                    {isActive && q.explanation && <div className="desc-box" style={{ marginTop: 12, color: "#444", lineHeight: 1.6 }}>{q.explanation}</div>}
+                                    {isCorrectOption && q.explanation && <div className="desc-box" style={{ marginTop: 12, color: "#444", lineHeight: 1.6 }}>{q.explanation}</div>}
 
-                                    {isActive && q.answeraudio && (
-                                      <div className="audio-box" style={{ marginTop: 12 }}>
-                                        <audio controls style={{ width: "100%" }}>
-                                          <source src={q.answeraudio.startsWith("http") ? q.answeraudio : `${q.answeraudio}`} type="audio/mpeg" />
-                                          Your browser does not support the audio element.
-                                        </audio>
-                                      </div>
-                                    )}
+                                    {/* ✅ SINGLE QUESTION → show below correct option */}
+                                    {!isMultiple &&
+                                      isCorrectOption &&
+                                      showStats[id] &&
+                                      isSubmitted &&
+                                      isCorrect === true &&
+                                      (q.answeraudio || q.answerreason) && (
+                                        <div className="audio-box" style={{ marginTop: 12 }}>
+                                          {q.answerreason && (
+                                            <p className="reason-text">
+                                              <i className="bi bi-dot"></i> {q.answerreason}
+                                            </p>
+                                          )}
+                                          {q.answeraudio && (
+                                            <audio controls style={{ width: "100%" }}>
+                                              <source
+                                                src={q.answeraudio.startsWith("http")
+                                                  ? q.answeraudio
+                                                  : q.answeraudio}
+                                                type="audio/mpeg"
+                                              />
+                                              Your browser does not support the audio element.
+                                            </audio>
+                                          )}
+                                        </div>
+                                      )}
+
+
                                   </div>
                                 );
                               })}
+
+
+
+                              {/* ✅ MULTIPLE QUESTION → show once at end */}
+                              {isMultiple &&
+                                showStats[id] &&
+                                isSubmitted &&
+                                isCorrect === true &&
+                                (q.answeraudio || q.answerreason) && (
+                                  <div className="audio-box" style={{ marginTop: 16 }}>
+                                    {q.answerreason && (
+                                      <p className="reason-text">
+                                        <i className="bi bi-dot"></i> {q.answerreason}
+                                      </p>
+                                    )}
+                                    {q.answeraudio && (
+                                      <audio controls style={{ width: "100%" }}>
+                                        <source
+                                          src={q.answeraudio.startsWith("http")
+                                            ? q.answeraudio
+                                            : q.answeraudio}
+                                          type="audio/mpeg"
+                                        />
+                                        Your browser does not support the audio element.
+                                      </audio>
+                                    )}
+                                  </div>
+                                )}
+
+
                             </div>
                           </div>
 
                           {/* total responses (if provided) */}
-                          {totalResponses != null && totalResponses>5 && <div style={{ marginTop: 12, color: "#444", fontWeight: 600 }}>{totalResponses} Total Responses</div>}
+                          {totalResponses != null && totalResponses >= 0 && <div style={{ marginTop: 12, color: "#444", fontWeight: 600 }}>{totalResponses} Total Responses</div>}
 
                           {/* BACK TO QUESTION link (left side) */}
                           {isCorrect !== true && (
@@ -395,7 +504,9 @@ SUBMIT ANSWER
                         {options.map((optObj, i) => {
                           const opt = optObj.text;
                           const optionId = `${id}-opt-${i}`;
-                          const checked = sel === opt;
+
+                          // const checked = sel === opt;
+                          const checked = isMultiple ? Array.isArray(sel) && sel.includes(opt) : sel === opt;
 
                           let background = "#fff";
                           let border = "1px solid transparent";
@@ -413,13 +524,19 @@ SUBMIT ANSWER
                             }
                           }
 
+
+
+
+
                           return (
-                            <div key={optionId} onClick={() => handleSelect(id, opt)} style={{ ...styles.optionRow, background, border }} role="button">
-                              <input id={optionId} type="radio" name={`radio-${id}`} value={opt} checked={checked || false} readOnly style={styles.radio} />
+                            <div onClick={() => handleSelect(id, opt, isMultiple)} style={{ ...styles.optionRow, background, border }} key={optionId}>
+                              <input id={optionId} type={isMultiple ? "checkbox" : "radio"} name={`radio-${id}`} checked={checked || false} readOnly />
+ 
                               <label htmlFor={optionId} style={{ cursor: "pointer", color }}>{opt}</label>
                             </div>
                           );
                         })}
+
 
                         <div style={styles.submitRow}>
                           {!isSubmitted && (
@@ -432,7 +549,7 @@ SUBMIT ANSWER
                           {!isSubmitted ? (
                             <button className="submitbuttoncls"
                               onClick={() => submitAnswer(q)}
-                              disabled={!sel}
+                              disabled={!canSubmit}
                               style={{
                                 minWidth: 160,
                                 padding: "14px 22px",
@@ -452,27 +569,12 @@ SUBMIT ANSWER
                         {/* wrong/correct messaging */}
                         {isSubmitted && (isCorrect === false || isCorrect === true) && (
                           <div style={{ marginTop: 12 }}>
-                            {/* <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                              <div style={{ width: 28, height: 28, borderRadius: 20, background: "#ff3b30", color: "#fff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>✕</div>
-                              <div>
-                                <div style={{ color: "#a12a22", fontWeight: 700 }}>Try again! That is not the correct answer.</div>
-                              </div>
-                            </div> */}
-
                             <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
                               <button style={{ padding: "12px 22px", borderRadius: 6, border: "1px solid #ccc", background: "#132573", fontWeight: 500 }} onClick={() => nextChallenge(index)}>NEXT CHALLENGE <i className="bi bi-arrow-right"></i></button>
                               <button style={{ padding: "12px 22px", borderRadius: 6, border: "none", background: "#132573", color: "#fff", fontWeight: 500 }} onClick={() => tryAgain(id)}><i className="bi bi-arrow-clockwise"></i> TRY AGAIN</button>
                             </div>
                           </div>
                         )}
-
-                        {/* {isSubmitted && isCorrect === true && (
-                          <div style={{ marginTop: 12, color: "#0b7a3a", fontWeight: 700 }}>You selected the correct answer.</div>
-                        )}
-
-                        {isSubmitted && isCorrect === false && (
-                          <div style={{ marginTop: 12, color: "#bb0b0bff", fontWeight: 700 }}>Submitted — correct answer not available locally.</div>
-                        )} */}
                       </>
                     )}
                   </div>

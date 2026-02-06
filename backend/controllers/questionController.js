@@ -16,7 +16,9 @@ exports.addQuestion = async (req, res) => {
       option2,
       option3,
       option4,
+      option5,
       correctoption,
+      answerreason,
       status,
     } = req.body;
 
@@ -74,7 +76,9 @@ exports.addQuestion = async (req, res) => {
       option2,
       option3,
       option4,
+      option5,
       correctoption,
+      answerreason,
       image,
       image_public_id,
       answeraudio,

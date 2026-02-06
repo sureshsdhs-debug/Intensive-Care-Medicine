@@ -13,7 +13,10 @@ const Add = () => {
   const [subjects, setSubjects] = useState([]);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const { token } =  useAuth();
+  const { token } = useAuth();
+  const [audioFile, setAudioFile] = useState(null);
+  const [audioPreviewUrl, setAudioPreviewUrl] = useState(null); // for newly selected audio
+
   const [inputs, setInputs] = useState({
     questiontext: "",
     questiontype: "Single Question",
@@ -22,12 +25,19 @@ const Add = () => {
     option2: "",
     option3: "",
     option4: "",
-    correctoption: "",
+    option5: "",
+    answerreason: "",
+    correctoption: [],
   });
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (inputs.correctoption == '') {
+      toast.error("Select at least one correct option");
+      return;
+    }
 
     try {
       // Use FormData for file upload
@@ -39,11 +49,28 @@ const Add = () => {
       formData.append("option2", inputs.option2);
       formData.append("option3", inputs.option3);
       formData.append("option4", inputs.option4);
-      formData.append("correctoption", inputs.correctoption);
+      formData.append("option5", inputs.option5);
+      formData.append("answerreason", inputs.answerreason);
+      // formData.append("correctoption", inputs.correctoption);
+
+
+      if (inputs.questiontype === "Multiple Question") {
+        inputs.correctoption.forEach((opt) =>
+          formData.append("correctoption[]", opt)
+        );
+      } else {
+        formData.append("correctoption", inputs.correctoption[0] || "");
+      }
+
+
 
       // If image selected, append it. Backend should expect field name 'image' (adjust if different).
       if (imageFile) {
         formData.append("image", imageFile);
+      }
+
+      if (audioFile) {
+        formData.append("answeraudio", audioFile); // backend should expect 'answeraudio'
       }
 
       const config = {
@@ -51,7 +78,7 @@ const Add = () => {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`
         },
-      }; 
+      };
 
       const { data } = await axios.post(`${BACKEND_BASE_URL}/api/question/add`, formData, config);
 
@@ -75,6 +102,8 @@ const Add = () => {
     }));
   };
 
+ 
+
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) {
@@ -95,6 +124,33 @@ const Add = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading]);
 
+
+
+  // audio input change
+  const handleAudioChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      setAudioFile(null);
+      setAudioPreviewUrl(null);
+      return;
+    }
+
+    // optional validations for audio
+    if (!file.type.startsWith("audio/")) {
+      toast.error("Please select a valid audio file");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Audio must be under 10MB");
+      return;
+    }
+
+    const url = URL.createObjectURL(file);
+    setAudioFile(file);
+    setAudioPreviewUrl(url);
+  };
+
+
   return (
     <div className="main">
       <div className="report-container-1">
@@ -111,7 +167,7 @@ const Add = () => {
               <div className="col-md-12">
                 <div className="mb-3">
                   <label htmlFor="questiontext" className="form-label">
-                    Question Text <span className="text-success"><b>*</b></span>
+                    Question Text <span className="text-danger"><b>*</b></span>
                   </label>
                   <input
                     id="questiontext"
@@ -126,14 +182,25 @@ const Add = () => {
                 </div>
               </div>
 
-              <div className="col-md-6">
-                <div className="mb-3">
-                  <label className="form-label">Question Type</label>
-                  <select className="form-select form-controle" name="questiontype" onChange={handleChange} value={inputs.questiontype}>
-                    <option value="Single Question">Single Question</option>
-                    <option value="Multiple Question">Multiple Question</option>
-                  </select>
-                </div>
+              <div className="col-md-6 mb-3">
+                <label>Question Type</label>
+                <select
+                  name="questiontype"
+                  className="form-select"
+                  value={inputs.questiontype}
+                  onChange={(e) => {
+                    const value = e.target.value;
+
+                    setInputs((prev) => ({
+                      ...prev,
+                      questiontype: value,
+                      correctoption: [], // ✅ reset ONLY when user changes type
+                    }));
+                  }}
+                >
+                  <option value="Single Question">Single Question</option>
+                  <option value="Multiple Question">Multiple Question</option>
+                </select>
               </div>
 
               <div className="col-md-6">
@@ -146,9 +213,9 @@ const Add = () => {
                 </div>
               </div>
 
-              <div className="col-md-3">
+              <div className="col-md-2">
                 <div className="mb-3">
-                  <label className="form-label">Option 1<span className="text-success"><b>*</b></span></label>
+                  <label className="form-label">Option 1<span className="text-danger"><b>*</b></span></label>
                   <input
                     type="text"
                     className="form-control"
@@ -161,9 +228,9 @@ const Add = () => {
                 </div>
               </div>
 
-              <div className="col-md-3">
+              <div className="col-md-2">
                 <div className="mb-3">
-                  <label className="form-label">Option 2<span className="text-success"><b>*</b></span></label>
+                  <label className="form-label">Option 2<span className="text-danger"><b>*</b></span></label>
                   <input
                     type="text"
                     className="form-control"
@@ -176,9 +243,9 @@ const Add = () => {
                 </div>
               </div>
 
-              <div className="col-md-3">
+              <div className="col-md-2">
                 <div className="mb-3">
-                  <label className="form-label">Option 3<span className="text-success"><b>*</b></span></label>
+                  <label className="form-label">Option 3<span className="text-danger"><b>*</b></span></label>
                   <input
                     type="text"
                     className="form-control"
@@ -191,9 +258,9 @@ const Add = () => {
                 </div>
               </div>
 
-              <div className="col-md-3">
+              <div className="col-md-2">
                 <div className="mb-3">
-                  <label className="form-label">Option 4<span className="text-success"><b>*</b></span></label>
+                  <label className="form-label">Option 4<span className="text-danger"><b>*</b></span></label>
                   <input
                     type="text"
                     className="form-control"
@@ -206,23 +273,81 @@ const Add = () => {
                 </div>
               </div>
 
-              <div className="col-md-6">
+              <div className="col-md-2">
                 <div className="mb-3">
-                  <label className="form-label">
-                    Correct Option <span className="text-success"><b>*</b></span>
-                  </label>
-                  <select className="form-select form-controle" name="correctoption" onChange={handleChange} required value={inputs.correctoption}>
-                    <option value="">-- Choose Option --</option>
-                    <option value="option1">Option1</option>
-                    <option value="option2">Option2</option>
-                    <option value="option3">Option3</option>
-                    <option value="option4">Option4</option>
-                  </select>
+                  <label className="form-label">Option 5</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="option5"
+                    onChange={handleChange}
+                    value={inputs.option5}
+                    placeholder="Ex. 234"
+                  />
                 </div>
               </div>
 
+               <div className="col-md-12 mb-3">
+                <label>
+                  Correct Option <span className="text-danger"><b>*</b></span>
+                </label>
+
+                {inputs.questiontype === "Multiple Question" ? (
+                  // ✅ MULTIPLE (CHECKBOX)
+                  ["option1", "option2", "option3", "option4", "option5"].map((opt) =>
+                    inputs[opt] ? (
+                      <div className="form-check" key={opt}>
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          id={`correct-${opt}`}
+                          checked={inputs.correctoption.includes(opt)}
+                          onChange={(e) => {
+                            setInputs((prev) => ({
+                              ...prev,
+                              correctoption: e.target.checked
+                                ? [...prev.correctoption, opt]
+                                : prev.correctoption.filter((o) => o !== opt),
+                            }));
+                          }}
+                        />
+                        <label className="form-check-label" htmlFor={`correct-${opt}`}>
+                          {inputs[opt]}
+                        </label>
+                      </div>
+                    ) : null
+                  )
+                ) : (
+                  // ✅ SINGLE (RADIO)
+                  ["option1", "option2", "option3", "option4", "option5"].map((opt) =>
+                    inputs[opt] ? (
+                      <div className="form-check" key={opt}>
+                        <input
+                          type="radio"
+                          id={`correct-${opt}`}
+                          name="correctoption"
+                          value={opt}
+                          className="form-check-input"
+                          checked={inputs.correctoption.includes(opt)}   // ✅ FIX
+                          onChange={() => {
+                            setInputs((prev) => ({
+                              ...prev,
+                              correctoption: [opt],                       // ✅ always array
+                            }));
+                          }}
+                        />
+                        <label className="form-check-label" htmlFor={`correct-${opt}`}>
+                          {inputs[opt]}
+                        </label>
+                      </div>
+                    ) : null
+                  ) 
+                )}
+              </div>
+
+
               {/* Image upload field */}
-              <div className="col-md-6">
+              <div className="col-md-3">
                 <div className="mb-3">
                   <label className="form-label">Question Image (optional)</label>
                   <input
@@ -242,6 +367,46 @@ const Add = () => {
                   )}
                 </div>
               </div>
+
+
+              {/* Audio upload */}
+              <div className="col-md-3 mb-3">
+                <label>Answer Audio (optional)</label>
+                <input
+                  type="file"
+                  accept="audio/*"
+                  className="form-control"
+                  onChange={handleAudioChange}
+                />
+
+                {/* Show audio preview if user selected a new audio file */}
+                {audioPreviewUrl ? (
+                  <div style={{ marginTop: 8 }}>
+                    {/* <small className="text-muted">New Audio Preview:</small> */}
+                    <div style={{ marginTop: 6 }}>
+                      <audio controls src={audioPreviewUrl}>
+                        Your browser does not support the audio element.
+                      </audio>
+                    </div>
+                  </div>
+                ) : ''}
+              </div>
+
+              <div className="col-md-6 mb-3">
+                <label> Answer Reason (optional)</label>
+                <input
+                  id="answerreason"
+                  type="text"
+                  className="form-control"
+                  name="answerreason"
+                  onChange={handleChange}
+                  value={inputs.answerreason}
+                  placeholder=""
+                />
+              </div>
+
+
+
 
             </div>
 
