@@ -395,11 +395,11 @@ SUBMIT ANSWER
                                       <div style={{ flex: 1 }}>
                                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                           <div style={{ fontSize: 16, color: "#000" }}> {s.text} </div>
-                                          {totalResponses >= 0 && (
+                                          {totalResponses >= 5 && (
                                             <div style={styles.percentText}> &nbsp; {s.percent}% </div>
                                           )}
                                         </div>
-                                        {totalResponses >= 0 && (
+                                        {totalResponses >= 5 && (
                                           <div style={styles.progressWrap}>
                                             <div style={{ width: `${s.percent}%`, height: "100%", background: (isSubmitted && isCorrect === true && isCorrectOption) ? "#22c55e" : "#2b5db5", borderRadius: 6 }} />
                                           </div>
@@ -474,7 +474,7 @@ SUBMIT ANSWER
                           </div>
 
                           {/* total responses (if provided) */}
-                          {totalResponses != null && totalResponses >= 0 && <div style={{ marginTop: 12, color: "#444", fontWeight: 600 }}>{totalResponses} Total Responses</div>}
+                          {totalResponses != null && totalResponses >= 5 && <div style={{ marginTop: 12, color: "#444", fontWeight: 600 }}>{totalResponses} Total Responses</div>}
 
                           {/* BACK TO QUESTION link (left side) */}
                           {isCorrect !== true && (
