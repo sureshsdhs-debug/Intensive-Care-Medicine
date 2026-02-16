@@ -71,13 +71,3 @@ button:focus-visible {
 }
 
 
-.correct-multi-select {
-  min-height: 120px;      /* control height */
-  padding: 8px;
-}
-
-.correct-multi-select option {
-  padding: 8px;
-  font-size: 14px;
-}
-
