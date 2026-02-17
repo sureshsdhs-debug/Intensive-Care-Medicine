@@ -1,6 +1,6 @@
 // Main.js
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import DataTable from "react-data-table-component";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -12,100 +12,83 @@ import QuestionWidget from "./QuestionWidget";
 import "../../assets/userstyle.css";
 import useAntiScreenshot from "../../hooks/useAntiScreenshot";
 
-export const UserDashboard = ({ getRole, roleAuth }) => {
+export const UserDashboard = ({ getRole, roleAuth, pageIndex, setPageIndex, isManualNavigation, setIsManualNavigation }) => {
   const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tableOfContentsData, setTableOfContents] = useState([]);
   const [isNextDisabled, setIsNextDisabled] = useState(false);
   const { token } = useAuth();
-
+  const [serverUserResults, setServerUserResults] = useState([]);
 
   // call getRole once on mount
   useEffect(() => {
     getRole();
   }, [getRole]);
 
-  // --- PAGER LOGIC (converted from <script> tag) ---
-  const [pageIndex, setPageIndex] = useState(0);
-  const touchStartX = useRef(null);
+
+
+  const fetchThisUserResultData = useCallback(async () => {
+    try {
+      const { data } = await axios.get(
+        `${BACKEND_BASE_URL}/api/result/get-thisuser-result`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      ); 
+
+      if (Array.isArray(data)) setServerUserResults(data);
+      else if (data?.success) setServerUserResults(data.resultData || []);
+      else setServerUserResults([]);
+    } catch (err) {
+      toast.error("Error fetching user results");
+    }
+  }, [BACKEND_BASE_URL, token]);
+
 
   useEffect(() => {
-    const pages = document.querySelectorAll(".page");
+    if (token) fetchThisUserResultData();
+  }, [fetchThisUserResultData, token]);
+ 
+
+  useEffect(() => {
+    const pages = document.querySelectorAll(".pager > .page");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
 
     if (!pages.length || !prevBtn || !nextBtn) return;
 
-    const lastIndex = pages.length - 1;
-    let idx = pageIndex;
+    const lastIndex = pages.length;// - 1;
 
 
     const showPage = (i) => {
       pages.forEach((p) => p.classList.remove("active"));
-      if (pages[i]) {
-        pages[i].classList.add("active");
-      }
+      if (pages[i]) pages[i].classList.add("active");
 
       prevBtn.disabled = i === 0;
-      nextBtn.disabled = i === 9;//lastIndex;
+      nextBtn.disabled = i === lastIndex;
     };
 
     const goTo = (i) => {
-      // if (i > 5) {
-      //   console.log(i);
-      //   setIsNextDisabled(true);
-      // } else {
-      //   setIsNextDisabled(false);
-      // }
       const newIndex = Math.max(0, Math.min(i, lastIndex));
-      idx = newIndex;
       setPageIndex(newIndex);
       showPage(newIndex);
     };
 
-    // initial state
-    showPage(idx);
+    showPage(pageIndex);
 
-    // button click handlers
-    const handleNextClick = () => goTo(idx + 1);
-    const handlePrevClick = () => goTo(idx - 1);
+    const handleNextClick = () => goTo(pageIndex + 1);
+    const handlePrevClick = () => goTo(pageIndex - 1);
 
     nextBtn.addEventListener("click", handleNextClick);
     prevBtn.addEventListener("click", handlePrevClick);
 
-    // keyboard
-    const handleKeyDown = (e) => {
-      if (e.key === "ArrowRight") goTo(idx + 1);
-      if (e.key === "ArrowLeft") goTo(idx - 1);
-    };
-    window.addEventListener("keydown", handleKeyDown);
-
-    // swipe
-    const handleTouchStart = (e) => {
-      touchStartX.current = e.touches[0].clientX;
-    };
-
-    const handleTouchEnd = (e) => {
-      if (touchStartX.current == null) return;
-      const dx = e.changedTouches[0].clientX - touchStartX.current;
-      if (dx < -40) goTo(idx + 1);
-      if (dx > 40) goTo(idx - 1);
-      touchStartX.current = null;
-    };
-
-    document.addEventListener("touchstart", handleTouchStart, { passive: true });
-    document.addEventListener("touchend", handleTouchEnd);
-
-    // cleanup on unmount / re-run
     return () => {
       nextBtn.removeEventListener("click", handleNextClick);
       prevBtn.removeEventListener("click", handlePrevClick);
-      window.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("touchstart", handleTouchStart);
-      document.removeEventListener("touchend", handleTouchEnd);
     };
   }, [pageIndex]);
+
+
+
 
   // get the table of content data 
   const fetchAllTableOfContent = async () => {
@@ -163,7 +146,7 @@ export const UserDashboard = ({ getRole, roleAuth }) => {
       {token && !roleAuth && (
         <div>
           <div className="pager">
-            <section className="page active front-page-div">
+            <section className="page active front-page-div" id="first-sec">
               <div className="container-fluid p-0">
                 <div className="front-page-shape">
                   <img src={shapeImage} alt="Shapes" />
@@ -567,17 +550,19 @@ export const UserDashboard = ({ getRole, roleAuth }) => {
             </section>
 
 
-            <QuestionWidget />
-
+            <QuestionWidget pageIndex={pageIndex} isManualNavigation={isManualNavigation}
+              setIsManualNavigation={setIsManualNavigation} />
             {/* Controls */}
-            <div className="controls">
-              <button className="btn" id="prevBtn">
-                ← Prev
-              </button>
-              <button className="btn" id="nextBtn" disabled={isNextDisabled}>
-                Next →
-              </button>
-            </div>
+            {(isManualNavigation || serverUserResults.length <= 0) && (
+              <div className="controls">
+                <button className="btn" id="prevBtn">
+                  ← Prev
+                </button>
+                <button className="btn" id="nextBtn" disabled={isNextDisabled}>
+                  Next →
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

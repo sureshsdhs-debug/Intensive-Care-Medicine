@@ -46,7 +46,8 @@ import { AuthProvider } from './auth/AuthProvider';
 
 function App() {
   const [roleAuth, setRoleAuth] = useState(null);
-
+const [pageIndex, setPageIndex] = useState(0);
+const [isManualNavigation, setIsManualNavigation] = useState(false);
   const getRole = () => {
     const userRole = localStorage.getItem('role');
     if (userRole) {
@@ -65,7 +66,7 @@ function App() {
     <Router> 
       <AuthProvider> 
         <ProtectedRoute>
-          <Header getRole={getRole} roleAuth={roleAuth} />
+          <Header getRole={getRole} roleAuth={roleAuth} pageIndex={pageIndex} setPageIndex={setPageIndex} setIsManualNavigation={setIsManualNavigation}/>
         </ProtectedRoute>
         <div className="main-container">
           {/* Show Nav only if authenticated */}
@@ -86,7 +87,8 @@ function App() {
                   {roleAuth === "1" ? (
                     <Dashboard getRole={getRole} roleAuth={roleAuth} />
                   ) : (
-                    <UserDashboard getRole={getRole} roleAuth={roleAuth} />
+                    <UserDashboard getRole={getRole} roleAuth={roleAuth}   pageIndex={pageIndex} setPageIndex={setPageIndex} isManualNavigation={isManualNavigation}
+   setIsManualNavigation={setIsManualNavigation}/>
                   )}
                 </ProtectedRoute>
               }

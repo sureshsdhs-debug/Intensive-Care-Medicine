@@ -34,7 +34,7 @@
   }
 
   /* Submit row */
-  .question-answer .submit-row,
+  .question-answer .submit-row
   .question-answer div[style*="justify-content"] {
     flex-direction: column;
     align-items: stretch;
@@ -70,4 +70,10 @@
   audio {
     width: 100%;
   }
+}
+.question-back-button{
+display:flex; gap: 12px; align-items: center;
+}
+.question-back-button >button{
+  padding: 7px 10px; border-radius: 6px; border: 1px solid #ccc; background: #132573; font-weight: 500;
 }

@@ -92,6 +92,21 @@ body {
     -ms-user-select: none;   
 }
 
+
+.pager > .page {
+  display: none;
+}
+
+
+/* show active page only */
+.pager > .page.active {
+  display: block;
+}
+
+.page {
+  width: 100%;
+}
+
 p {
     font-family: "Poppins", sans-serif;
 }
