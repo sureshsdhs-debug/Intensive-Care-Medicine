@@ -402,7 +402,7 @@ SUBMIT ANSWER
   const styles = {
     containerRight: { padding: 24 },
     questionText: { fontSize: 20, marginBottom: 18, lineHeight: 1.5, fontWeight: 500 },
-    optionRow: { display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 6, marginBottom: 10, cursor: "pointer", minHeight: 48 },
+    optionRow: { display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", borderRadius: 6, cursor: "pointer"},
     radio: { width: 18, height: 18 },
     submitRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 18, borderTop: "1px solid #e8e8e8", paddingTop: 16 },
     item: { marginBottom: 18 },

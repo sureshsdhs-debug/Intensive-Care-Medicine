@@ -2,9 +2,10 @@
 import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import defaultImage from "../../assets/banner.jpg";
+// import defaultImage from "../../assets/banner.jpg";
 import { useUser } from "../../context/UserContext";
-
+import "../../assets/questionstyle.css"
+import api from "../../utils/api";
 
 /**
  * QuestionWidget
@@ -14,7 +15,7 @@ import { useUser } from "../../context/UserContext";
  * - On correct submit, results panel opens automatically
  */
 
-const QuestionWidget = () => {
+const QuestionWidget = ({ pageIndex, isManualNavigation, setIsManualNavigation }) => {
   const hasAutoScrolled = useRef(false);
   const token = localStorage.getItem("token");
   const [questions, setQuestions] = useState([]);
@@ -28,21 +29,27 @@ const QuestionWidget = () => {
 
   const fetchAllQuestion = useCallback(async () => {
     try {
-      const { data } = await axios.get(
+      const { data } = await api.get(
         `${BACKEND_BASE_URL}/api/question/get-all`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      if (data?.success) setQuestions(data.question || []);
-      else toast.error("Failed to fetch questions");
+      
+      if (data?.success){
+        setQuestions(data.question || []);
+      }
+      else{
+        toast.error("Failed to fetch questions");
+      }
     } catch (err) {
       toast.error(err?.response?.data?.message || "Error fetching questions");
     }
-  }, [BACKEND_BASE_URL]);
+  }, [BACKEND_BASE_URL,token]);
 
-  useEffect(() => {
-    fetchAllQuestion();
-  }, []);
+    useEffect(() => {
+      if (token) {
+        fetchAllQuestion();
+      }
+    }, [fetchAllQuestion, token]);
 
 
   const fetchThisUserResult = useCallback(async () => {
@@ -51,7 +58,7 @@ const QuestionWidget = () => {
         `${BACKEND_BASE_URL}/api/result/get-thisuser-result`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-// console.log(data.resultData);
+      // console.log(data.resultData);
 
       if (Array.isArray(data)) setServerResults(data);
       else if (data?.success) setServerResults(data.resultData || []);
@@ -87,45 +94,85 @@ const QuestionWidget = () => {
     return q[q.correctoption] ?? null;
   }, []);
 
+ 
 
-  /* ----------------------------------------
-      SYNC SERVER RESULTS → STATE
-   ---------------------------------------- */
+
   useEffect(() => {
-    if (!serverResults.length || !questionMap.size) return;
+  if (!serverResults.length || !questionMap.size) return;
 
-    const newSelected = {};
-    const newSubmitted = new Set();
-    const newResults = {};
+  const newSelected = {};
+  const newSubmitted = new Set();
+  const newResults = {};
 
-    serverResults.forEach(r => {
-      const qId = String(r.questionid);
-      const qObj = questionMap.get(qId);
-      if (!qObj) return;
+  serverResults.forEach(r => {
+    const qId = String(r.questionid);
+    const qObj = questionMap.get(qId);
+    if (!qObj) return;
 
-      const selectedText = qObj[r.selectedoption];
-      const correctValue = resolveCorrectValue(qObj);
+    const isMultiple = qObj.questiontype === "Multiple Question";
+    const correctValue = resolveCorrectValue(qObj);
 
-      const isCorrect =
-        selectedText && correctValue
-          ? String(selectedText).trim() === String(correctValue).trim()
+    let selectedValue = null;
+
+    // ✅ MULTIPLE QUESTION FIX
+    if (isMultiple) {
+      if (Array.isArray(r.selectedoption)) {
+        selectedValue = r.selectedoption
+          .map(key => qObj[key])
+          .filter(Boolean);
+      } else if (typeof r.selectedoption === "string") {
+        selectedValue = [qObj[r.selectedoption]].filter(Boolean);
+      } else {
+        selectedValue = [];
+      }
+    } else {
+      selectedValue = qObj[r.selectedoption] ?? null;
+    }
+
+    // correctness check
+    let isCorrect = null;
+
+    if (!isMultiple) {
+      isCorrect =
+        selectedValue && correctValue
+          ? String(selectedValue).trim() === String(correctValue).trim()
           : null;
+    } else {
+      const correctKeys = Array.isArray(qObj.correctoption)
+        ? qObj.correctoption
+        : [qObj.correctoption];
 
-      newSelected[qId] = selectedText;
-      newSubmitted.add(qId);
-      newResults[qId] = { isCorrect, correctValue };
-    });
+      const selectedKeys = Array.isArray(r.selectedoption)
+        ? r.selectedoption
+        : [r.selectedoption];
 
-    setSelected(newSelected);
-    setSubmitted(newSubmitted);
-    setResults(newResults);
-  }, [serverResults, questionMap, resolveCorrectValue]);
+      isCorrect =
+        correctKeys.length === selectedKeys.length &&
+        correctKeys.every(k => selectedKeys.includes(k));
+    }
+
+    newSelected[qId] = selectedValue;
+    newSubmitted.add(qId);
+    newResults[qId] = { isCorrect, correctValue };
+  });
+
+  setSelected(newSelected);
+  setSubmitted(newSubmitted);
+  setResults(newResults);
+}, [serverResults, questionMap, resolveCorrectValue]);
+
 
 
   /* ----------------------------------------
        AUTO SCROLL TO NEXT UNANSWERED QUESTION
     ---------------------------------------- */
+
   useEffect(() => {
+    // ❌ If user clicked header menu → don't auto scroll
+
+    if (isManualNavigation) {
+      hasAutoScrolled.current = false;
+    }
     if (!questions.length || hasAutoScrolled.current || !serverResults.length) return;
 
     const answeredIds = new Set(
@@ -136,17 +183,38 @@ const QuestionWidget = () => {
       questions.find(q => !answeredIds.has(String(q._id))) ||
       questions[questions.length - 1];
 
-    if (!nextQuestion) return;
+    if (isManualNavigation) {
+      // console.log(isManualNavigation);
+      const el = document.getElementById('first-sec');
+      if (el) {
+        el.scrollIntoView({
+          block: "center",
+          // behavior: "smooth"
+        });
+      }
+    } else {
 
-    const el = document.getElementById(`q-${nextQuestion._id}`);
-    if (el) {
-      el.scrollIntoView({ block: "center", });
-      hasAutoScrolled.current = true;
+      if (!nextQuestion) return;
+      const el = document.getElementById(`q-${nextQuestion._id}`);
+      if (el) {
+        el.scrollIntoView({
+          block: "center",
+          // behavior: "smooth"
+        });
+        hasAutoScrolled.current = true;
+      }
     }
-  }, [questions, serverResults]);
+
+  }, [questions, serverResults, pageIndex, isManualNavigation]);
 
 
 
+  useEffect(() => {
+    if (pageIndex >= 9) {
+      setIsManualNavigation(false);
+    }
+  }, [pageIndex]);
+  
   /* ----------------------------------------
 SUBMIT ANSWER
 ---------------------------------------- */
@@ -181,8 +249,6 @@ SUBMIT ANSWER
       return;
     }
 
-    // const selectedoption = Object.keys(q).find(k => q[k] === answer);
-
     let selectedoption;
 
     if (!isMultiple) {
@@ -193,13 +259,9 @@ SUBMIT ANSWER
       );
     }
 
-    // console.log(selectedoption);
-    // return false;
+    submitInToDB({ questionid: id, selectedoption });
 
-
-    // submitInToDB({ questionid: id, selectedoption });
-
-    const correctValue = resolveCorrectValue(q); 
+    const correctValue = resolveCorrectValue(q);
 
 
     let isCorrect = null;
@@ -222,9 +284,6 @@ SUBMIT ANSWER
     }
 
 
-//     console.log(isCorrect);
-// return false
-
     setSubmitted(prev => new Set(prev).add(id));
     setResults(prev => ({ ...prev, [id]: { isCorrect, correctValue } }));
 
@@ -235,12 +294,6 @@ SUBMIT ANSWER
   };
 
 
-
-
-  // const handleSelect = (qId, value) => {
-  //   if (submitted.has(qId)) return;
-  //   setSelected(prev => ({ ...prev, [qId]: value }));
-  // };
 
 
   const handleSelect = (qId, value, isMultiple) => {
@@ -303,6 +356,19 @@ SUBMIT ANSWER
     else toast("Cannot find next question.");
   };
 
+  const prevChallenge = (index) => {
+    const nextIndex = index - 1;
+    if (nextIndex >= questions.length) {
+      toast("No more questions.");
+      return;
+    }
+    const nextQ = questions[nextIndex];
+    const nextId = nextQ._id ?? nextQ.id ?? `q-${nextIndex}`;
+    const el = document.getElementById(`q-${nextId}`);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    else toast("Cannot find previous question.");
+  };
+
   // Build stats array [{key, text, percent}]
   const buildStats = (q) => {
     if (q.stats && typeof q.stats === "object") {
@@ -335,7 +401,7 @@ SUBMIT ANSWER
   // inline styles (you can move these to your css file)
   const styles = {
     containerRight: { padding: 24 },
-    questionText: { fontSize: 15, marginBottom: 18, lineHeight: 1.5, fontWeight: 500 },
+    questionText: { fontSize: 20, marginBottom: 18, lineHeight: 1.5, fontWeight: 500 },
     optionRow: { display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 6, marginBottom: 10, cursor: "pointer", minHeight: 48 },
     radio: { width: 18, height: 18 },
     submitRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 18, borderTop: "1px solid #e8e8e8", paddingTop: 16 },
@@ -345,16 +411,18 @@ SUBMIT ANSWER
     progressWrap: { height: 6, borderRadius: 6, marginTop: 8, overflow: "hidden", background: "#fff" },
     percentText: { fontWeight: 600, color: "#000" },
     backToQuestionLink: { color: "#1f6fb2", cursor: "pointer", display: "inline-block", fontWeight: 500 },
-    nextButtonFloating: { display: "inline-block", background: "#0b5fa5", color: "#fff", padding: "12px 22px", borderRadius: 6, border: "none", cursor: "pointer", float: "right", marginTop: 8 }
+    nextButtonFloating: { display: "inline-block", background: "#0f7fee", color: "#fff", padding: "7px 15px", borderRadius: 6, border: "none", cursor: "pointer", float: "right", marginTop: 8 }
   };
 
   return (
     <div>
       {questions.map((q, index) => {
-        const correctOptionKey = q.correctoption; // e.g. "option2"
+        const correctOptionKey = q.correctoption; // e.g. "option2" 
+
         const isMultiple = q.questiontype === "Multiple Question";
         const id = q._id ?? q.id ?? `q-${index}`;
         const options = ["option1", "option2", "option3", "option4", "option5"].filter(k => q[k]).map(k => ({ key: k, text: q[k] }));
+        
         const imageSrc = q?.image && typeof q.image === "string"
           ? (q.image.startsWith("http") ? q.image : `${q.image}`)
           : null;
@@ -370,11 +438,11 @@ SUBMIT ANSWER
         // optional total responses
         const totalResponses = q.totalResponses ?? q.totalResponsesCount ?? q.statsTotal ?? null;
 
-
         const canSubmit = isMultiple ? Array.isArray(sel) && sel.length > 0 : !!sel;
 
         return (
-          <section id={`q-${id}`} className="page front-page-div question-answer" key={id} style={{ marginBottom: 31 }}>
+          // <section id={`q-${id}`} className="page front-page-div question-answer" key={id} style={{ marginBottom: 31 }}>
+          <section id={`q-${id}`} className="question-answer" key={id} style={{ marginBottom: 31 }}>
             <div className="container-fluid p-0">
               <div className="row">
                 {/* left image */}
@@ -400,20 +468,20 @@ SUBMIT ANSWER
                               {stats.map((s) => {
                                 // const isCorrectOption = s.key === correctOptionKey;
 
-                                const isCorrectOption = isMultiple ? q.correctoption.includes(s.key) : s.key === correctOptionKey;
+                                const isCorrectOption = isMultiple ? q.correctoption.includes(s.key) : s.key === correctOptionKey[0];
+                           
                                 return (
                                   <div key={s.key} className="item" style={styles.item}>
                                     <div style={{ display: "flex", alignItems: "center" }}>
                                       <div style={isCorrectOption ? styles.circle : styles.circle}>{isCorrectOption ? "" : ""}</div>
-
                                       <div style={{ flex: 1 }}>
                                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                           <div style={{ fontSize: 16, color: "#000" }}> {s.text} </div>
-                                          {totalResponses >= 0 && (
+                                          {totalResponses >= 5 && (
                                             <div style={styles.percentText}> &nbsp; {s.percent}% </div>
                                           )}
-                                        </div>
-                                        {totalResponses >= 0 && (
+                                        </div> 
+                                        {totalResponses >= 5 && (
                                           <div style={styles.progressWrap}>
                                             <div style={{ width: `${s.percent}%`, height: "100%", background: (isSubmitted && isCorrect === true && isCorrectOption) ? "#22c55e" : "#2b5db5", borderRadius: 6 }} />
                                           </div>
@@ -424,30 +492,30 @@ SUBMIT ANSWER
                                     {isCorrectOption && q.explanation && <div className="desc-box" style={{ marginTop: 12, color: "#444", lineHeight: 1.6 }}>{q.explanation}</div>}
 
                                     {/* ✅ SINGLE QUESTION → show below correct option */}
-                                      {!isMultiple &&
-                                        isCorrectOption &&
-                                        showStats[id] &&
-                                        isSubmitted &&
-                                        isCorrect === true &&
-                                        (q.answeraudio || q.answerreason) && (
-                                          <div className="audio-box" style={{ marginTop: 12 }}>
-                                            {q.answerreason && (
-                                              <p className="reason-text">
-                                                <i className="bi bi-dot"></i> {q.answerreason}
-                                              </p>
-                                            )}
-                                            {q.answeraudio && (
-                                              <audio controls style={{ width: "100%" }}>
-                                                <source
-                                                  src={q.answeraudio.startsWith("http")
-                                                    ? q.answeraudio
-                                                    : q.answeraudio}
-                                                  type="audio/mpeg"
-                                                />
-                                                Your browser does not support the audio element.
-                                              </audio>
-                                            )}
-                                          </div>
+                                    {!isMultiple &&
+                                      isCorrectOption &&
+                                      showStats[id] &&
+                                      isSubmitted &&
+                                      isCorrect === true &&
+                                      (q.answeraudio || q.answerreason) && (
+                                        <div className="audio-box" style={{ marginTop: 12 }}>
+                                          {q.answerreason && q.answerreason != "null" && (
+                                            <p className="reason-text">
+                                              <i className="bi bi-dot"></i> {q.answerreason}
+                                            </p>
+                                          )}
+                                          {q.answeraudio && (
+                                            <audio controls style={{ width: "100%" }}>
+                                              <source
+                                                src={q.answeraudio.startsWith("http")
+                                                  ? q.answeraudio
+                                                  : q.answeraudio}
+                                                type="audio/mpeg"
+                                              />
+                                              Your browser does not support the audio element.
+                                            </audio>
+                                          )}
+                                        </div>
                                       )}
 
 
@@ -458,29 +526,29 @@ SUBMIT ANSWER
 
 
                               {/* ✅ MULTIPLE QUESTION → show once at end */}
-                                {isMultiple &&
-                                  showStats[id] &&
-                                  isSubmitted &&
-                                  isCorrect === true &&
-                                  (q.answeraudio || q.answerreason) && (
-                                    <div className="audio-box" style={{ marginTop: 16 }}>
-                                      {q.answerreason && (
-                                        <p className="reason-text">
-                                          <i className="bi bi-dot"></i> {q.answerreason}
-                                        </p>
-                                      )}
-                                      {q.answeraudio && (
-                                        <audio controls style={{ width: "100%" }}>
-                                          <source
-                                            src={q.answeraudio.startsWith("http")
-                                              ? q.answeraudio
-                                              : q.answeraudio}
-                                            type="audio/mpeg"
-                                          />
-                                          Your browser does not support the audio element.
-                                        </audio>
-                                      )}
-                                    </div>
+                              {isMultiple &&
+                                showStats[id] &&
+                                isSubmitted &&
+                                isCorrect === true &&
+                                (q.answeraudio || q.answerreason) && (
+                                  <div className="audio-box" style={{ marginTop: 16 }}>
+                                    {q.answerreason && (
+                                      <p className="reason-text">
+                                        <i className="bi bi-dot"></i> {q.answerreason}
+                                      </p>
+                                    )}
+                                    {q.answeraudio && (
+                                      <audio controls style={{ width: "100%" }}>
+                                        <source
+                                          src={q.answeraudio.startsWith("http")
+                                            ? q.answeraudio
+                                            : q.answeraudio}
+                                          type="audio/mpeg"
+                                        />
+                                        Your browser does not support the audio element.
+                                      </audio>
+                                    )}
+                                  </div>
                                 )}
 
 
@@ -488,10 +556,10 @@ SUBMIT ANSWER
                           </div>
 
                           {/* total responses (if provided) */}
-                          {totalResponses != null && totalResponses >= 0 && <div style={{ marginTop: 12, color: "#444", fontWeight: 600 }}>{totalResponses} Total Responses</div>}
+                          {totalResponses != null && totalResponses >= 5 && <div style={{ marginTop: 12, color: "#444", fontWeight: 600 }}>{totalResponses} Total Responses</div>}
 
                           {/* BACK TO QUESTION link (left side) */}
-                          {isCorrect !== true && (
+                          {/* {isCorrect !== true && ( */}
                             <div style={styles.submitRow}>
                               <span
                                 onClick={() => setShowStats(prev => ({ ...prev, [id]: false }))}
@@ -500,7 +568,7 @@ SUBMIT ANSWER
                                 <i className="bi bi-arrow-left"></i> Back to question
                               </span>
                             </div>
-                          )}
+                          {/* )} */}
                         </div>
 
                         {/* floating Next Challenge button */}
@@ -515,11 +583,11 @@ SUBMIT ANSWER
                       <>
                         {options.length === 0 && <p>No options available.</p>}
 
+                        {/* console.log(isMultiple); */}
                         {options.map((optObj, i) => {
                           const opt = optObj.text;
                           const optionId = `${id}-opt-${i}`;
 
-                          // const checked = sel === opt;
                           const checked = isMultiple ? Array.isArray(sel) && sel.includes(opt) : sel === opt;
 
                           let background = "#fff";
@@ -539,15 +607,10 @@ SUBMIT ANSWER
                           }
 
 
-
-
-
                           return (
                             <div onClick={() => handleSelect(id, opt, isMultiple)} style={{ ...styles.optionRow, background, border }} key={optionId}>
                               <input id={optionId} type={isMultiple ? "checkbox" : "radio"} name={`radio-${id}`} checked={checked || false} readOnly />
 
-                              {/*<div key={optionId} onClick={() => handleSelect(id, opt)} style={{ ...styles.optionRow, background, border }} role="button">
-                              <input id={optionId} type="radio" name={`radio-${id}`} value={opt} checked={checked || false} readOnly style={styles.radio} /> */}
                               <label htmlFor={optionId} style={{ cursor: "pointer", color }}>{opt}</label>
                             </div>
                           );
@@ -555,24 +618,32 @@ SUBMIT ANSWER
 
 
                         <div style={styles.submitRow}>
-                          {!isSubmitted && (
+                          {/* {!isSubmitted && ( */}
+
+                          <div className="question-back-button">
+                            {serverResults.length > 0 && index > 0 && (
+                              <button onClick={() => prevChallenge(index)}> <i className="bi bi-arrow-left"></i> Back</button>
+                            )}
                             <a href="#"
                               onClick={(e) => { e.preventDefault(); setShowStats(prev => ({ ...prev, [id]: true })); }}
                               style={{ color: "#1f6fb2" }}>
                               See how others chose <i className="bi bi-arrow-right"></i>
                             </a>
-                          )}
+                          </div>
+
+
+                          {/* )}*/}
                           {!isSubmitted ? (
                             <button className="submitbuttoncls"
                               onClick={() => submitAnswer(q)}
                               disabled={!canSubmit}
                               style={{
-                                minWidth: 160,
-                                padding: "14px 22px",
+                                minWidth: 110,
+                                padding: "7px 15px",
                                 borderRadius: 8,
                                 border: "none",
                                 fontWeight: 700,
-                                background: sel ? "#0b5fa5" : "#c4d0d8",
+                                background: sel ? "#0f7fee" : "#c4d0d8",
                                 color: "#fff",
                                 cursor: sel ? "pointer" : "not-allowed"
                               }}
@@ -583,13 +654,15 @@ SUBMIT ANSWER
                         </div>
 
                         {/* wrong/correct messaging */}
-                        {isSubmitted && (isCorrect === false || isCorrect === true) && (
+                        {isSubmitted || (isCorrect === false || isCorrect === true) ? (
                           <div style={{ marginTop: 12 }}>
                             <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
-                              <button style={{ padding: "12px 22px", borderRadius: 6, border: "1px solid #ccc", background: "#0f7fee", fontWeight: 500 }} onClick={() => nextChallenge(index)}>NEXT CHALLENGE <i className="bi bi-arrow-right"></i></button>
-                              <button style={{ padding: "12px 22px", borderRadius: 6, border: "none", background: "#0f7fee", color: "#fff", fontWeight: 500 }} onClick={() => tryAgain(id)}><i className="bi bi-arrow-clockwise"></i> TRY AGAIN</button>
+                              <button style={{ padding: "7px 15px", borderRadius: 6, border: "1px solid #ccc", background: "#0f7fee", fontWeight: 500 }} onClick={() => nextChallenge(index)}>NEXT CHALLENGE <i className="bi bi-arrow-right"></i></button>
+                              <button style={{ padding: "7px 15px", borderRadius: 6, border: "none", background: "#0f7fee", color: "#fff", fontWeight: 500 }} onClick={() => tryAgain(id)}><i className="bi bi-arrow-clockwise"></i> TRY AGAIN</button>
                             </div>
                           </div>
+                        ) : (
+                          <span></span>
                         )}
                       </>
                     )}

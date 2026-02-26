@@ -184,7 +184,7 @@ body {
 
 .pager {
     width: 100vw;
-    height: 100vh;
+    /* height: 100vh; */
     /* position:relative;  */
     background: white;
     overflow: hidden;
@@ -237,7 +237,7 @@ body {
 
 .left-image-div {
     width: 100%;
-    height: 100vh;
+    /* height: 100vh; */
 }
 
 .left-image-div img {
@@ -387,10 +387,10 @@ body {
 }
 
 .question-answer {
-    padding: 60px;
+    padding: 0px 60px;
     display: flex;
     align-items: center;
-    height: 100vh;
+    /* height: 100vh; */
 }
 
 [type="radio"]:checked,
@@ -580,7 +580,7 @@ body {
   }
 
   .pager {
-    height: 100vh;
+    /* height: 100vh; */
     overflow: hidden;
   }
 
