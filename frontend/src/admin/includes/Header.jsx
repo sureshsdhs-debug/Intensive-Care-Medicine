@@ -3,12 +3,10 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../auth/AuthProvider';
 import { Link } from 'react-router-dom';
-
-const Header = ({ getRole, pageIndex, setPageIndex,setIsManualNavigation }) => {
+import logo from "../../assets/icm-logo.png";
+const Header = ({ getRole, pageIndex, setPageIndex, setIsManualNavigation }) => {
   const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const { token, logoutAction, role } = useAuth();
-
-  // const [pageIndex, setPageIndex] = useState(0);
 
   // ❌ If not logged in → show nothing
   if (!token) return null;
@@ -20,43 +18,6 @@ const Header = ({ getRole, pageIndex, setPageIndex,setIsManualNavigation }) => {
     }
   }, [getRole]);
 
-  // 👉 Page handling logic inside useEffect
-  // useEffect(() => {
-  //   const pages = document.querySelectorAll(".page");
-  //   const prevBtn = document.getElementById("prevBtn");
-  //   const nextBtn = document.getElementById("nextBtn");
-
-  //   if (!pages.length || !prevBtn || !nextBtn) return;
-
-  //   const lastIndex = pages.length - 1;
-
-  //   const showPage = (i) => {
-  //     console.log(i);
-      
-  //     pages.forEach((p) => p.classList.remove("active"));
-  //     if (pages[i]) pages[i].classList.add("active");
-
-  //     prevBtn.disabled = i === 0;
-  //     nextBtn.disabled = i === lastIndex;
-  //   };
-
-  //         const goTo = (i) => {
-  //           setPageIndex(i);
-  //         };
-
-  //   const handleNextClick = () => goTo(pageIndex + 1);
-  //   const handlePrevClick = () => goTo(pageIndex - 1);
-
-  //   showPage(pageIndex);
-
-  //   nextBtn.addEventListener("click", handleNextClick);
-  //   prevBtn.addEventListener("click", handlePrevClick);
-
-  //   return () => {
-  //     nextBtn.removeEventListener("click", handleNextClick);
-  //     prevBtn.removeEventListener("click", handlePrevClick);
-  //   };
-  // }, [pageIndex]);
 
   // Logout handler
   const handleLogout = async () => {
@@ -94,50 +55,78 @@ const Header = ({ getRole, pageIndex, setPageIndex,setIsManualNavigation }) => {
   // };
 
   const goTo = (index) => {
-  setIsManualNavigation(true);   // ⭐ IMPORTANT
-  setPageIndex(index);
-};
+    setIsManualNavigation(true);   // ⭐ IMPORTANT
+    setPageIndex(index);
+  };
 
   return (
     <header>
       <div className="logosec">
         <Link to="/dashboard" onClick={() => goTo(0)}>
-          <div className="logo">INTENSIVE CARE MEDICINE</div>
+          <div className="logo">
+            <img className='logo-class' src={logo} alt="Logo" /> </div>
         </Link>
 
-        <div onClick={() => goTo(1)}>
-          <p className={`mb-0 ${pageIndex === 1 ? "active-menu" : ""}`}>Copyright</p>
-        </div>
-
-        <div onClick={() => goTo(2)}>
-          <p className={`mb-0 ${pageIndex === 2 ? "active-menu" : ""}`}>Table of Contents</p>
-        </div>
-
-        <div onClick={() => goTo(3)}>
-          <p className={`mb-0 ${pageIndex === 3 ? "active-menu" : ""}`}>Acknowledgement</p>
-        </div>
-
-        <div onClick={() => goTo(4)}>
-          <p className={`mb-0 ${pageIndex === 4 ? "active-menu" : ""}`}>Dr. Sanjay</p>
-           </div>
-        <div onClick={() => goTo(5)}>
-          <p className={`mb-0 ${pageIndex === 5 ? "active-menu" : ""}`}>Dr. Aashish</p>
-           </div>
-        <div onClick={() => goTo(6)}>
-          <p className={`mb-0 ${pageIndex === 6 ? "active-menu" : ""}`}>Dr Prakash</p>
-        </div>
-
-        <div onClick={() => goTo(7)}>
-          <p className={`mb-0 ${pageIndex === 7 ? "active-menu" : ""}`}>About Author</p>
-        </div>
-        <div onClick={() => goTo(8)}>
-          <p className={`mb-0 ${pageIndex === 8 ? "active-menu" : ""}`}>Preface</p>
-        </div>
       </div>
+      <div className="logosec">
+        <button className="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+          <i className="bi bi-list"></i>
+        </button>
 
-      <button onClick={handleLogout} className="logout-btn">
-        <i className="bi bi-box-arrow-right"></i> Logout
-      </button>
+        <div className="offcanvas offcanvas-end custom-offcanvas"
+          tabIndex="-1"
+          id="offcanvasRight"
+        >
+          <div className="offcanvas-header border-bottom">
+            <h5 className="fw-bold mb-0 text-color">📖 Page Menus</h5>
+            <button
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="offcanvas"
+            ></button>
+          </div>
+
+          <div className="offcanvas-body p-0">
+            {[
+              "Copyright",
+              "Table of Contents",
+              "Acknowledgement",
+              "Dr. Sanjay",
+              "Dr. Aashish",
+              "Dr Prakash",
+              "About Author",
+              "Preface",
+            ].map((item, index) => (
+              <div
+                key={index}
+                onClick={() => goTo(index + 1)}
+                className={`menu-item ${pageIndex === index + 1 ? "active-menu" : ""
+                  }`}
+                data-bs-dismiss="offcanvas"
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <button onClick={handleLogout} className="logout-btn">
+          <i className="bi bi-box-arrow-right"></i> Logout
+        </button>
+      </div>
     </header>
   );
 };

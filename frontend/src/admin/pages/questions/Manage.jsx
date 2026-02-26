@@ -23,6 +23,7 @@ const Manage = () => {
     },
     { name: "Question", selector: (row) => row.questiontext, sortable: true },
     { name: "Question Type", selector: (row) => row.questiontype, sortable: true },
+    { name: "Ordering", selector: (row) => row.ordering, sortable: true },
     { name: "Status", selector: (row) => (row.status == 1 ? (<span className='badge bg-success'>Active</span>) : (<span className='badge bg-danger'>Inactive</span>)), sortable: true },
     {
       name: "Action",
@@ -64,8 +65,8 @@ const Manage = () => {
       if (data?.success) {
 
         toast.success(data.message);
-        const studentData = records.filter(std => std.id !== id);
-        setRecords(studentData);
+        const questionData = records.filter(std => std.id !== id);
+        setRecords(questionData);
       } else {
         toast.error(data.message);
       }
@@ -84,16 +85,18 @@ const Manage = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      if (data?.success) {
-        const formattedData = data.question.map((question) => ({
-          id: question._id,
-          image: question.image,
-          questiontext: question.questiontext,
-          questiontype: question.questiontype,
-          status: question.status,
-        }));
-        setRecords(formattedData);  // Initialize records with fetched data
-      }
+        if (data?.success) { 
+          const formattedData = data.question.map((question) => ({
+            id: question._id,
+            image: question.image,
+            questiontext: question.questiontext,
+            questiontype: question.questiontype,
+            status: question.status,
+            ordering: question.ordering,
+          }));
+
+          setRecords(formattedData);
+        }
 
     } catch (error) {
       toast.error(error?.response?.data?.message || "Error fetching students");
@@ -119,7 +122,7 @@ const Manage = () => {
             data={records}
             selectableRows
             fixedHeader
-            pagination
+            pagination  
           />
 
           {/* </div> */}

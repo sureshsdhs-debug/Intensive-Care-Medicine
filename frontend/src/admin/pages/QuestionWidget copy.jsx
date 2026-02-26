@@ -586,8 +586,8 @@ SUBMIT ANSWER
                         {isSubmitted && (isCorrect === false || isCorrect === true) && (
                           <div style={{ marginTop: 12 }}>
                             <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
-                              <button style={{ padding: "12px 22px", borderRadius: 6, border: "1px solid #ccc", background: "#132573", fontWeight: 500 }} onClick={() => nextChallenge(index)}>NEXT CHALLENGE <i className="bi bi-arrow-right"></i></button>
-                              <button style={{ padding: "12px 22px", borderRadius: 6, border: "none", background: "#132573", color: "#fff", fontWeight: 500 }} onClick={() => tryAgain(id)}><i className="bi bi-arrow-clockwise"></i> TRY AGAIN</button>
+                              <button style={{ padding: "12px 22px", borderRadius: 6, border: "1px solid #ccc", background: "#0f7fee", fontWeight: 500 }} onClick={() => nextChallenge(index)}>NEXT CHALLENGE <i className="bi bi-arrow-right"></i></button>
+                              <button style={{ padding: "12px 22px", borderRadius: 6, border: "none", background: "#0f7fee", color: "#fff", fontWeight: 500 }} onClick={() => tryAgain(id)}><i className="bi bi-arrow-clockwise"></i> TRY AGAIN</button>
                             </div>
                           </div>
                         )}

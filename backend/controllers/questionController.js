@@ -20,6 +20,7 @@ exports.addQuestion = async (req, res) => {
       correctoption,
       answerreason,
       status,
+      ordering
     } = req.body;
 
     // 1️⃣ Validate required fields
@@ -30,6 +31,7 @@ exports.addQuestion = async (req, res) => {
       !option2 ||
       !option3 ||
       !option4 ||
+      !ordering ||
       !correctoption
     ) {
       return res.status(400).json({
@@ -42,13 +44,26 @@ exports.addQuestion = async (req, res) => {
     const existing = await questionModel.findOne({
       questiontext: questiontext.trim(),
     });
-
+    
     if (existing) {
       return res.status(409).json({
         success: false,
         message: "This question already exists",
       });
     }
+
+    // 2️⃣ Duplicate check
+    const orderingExist = await questionModel.findOne({
+      ordering: ordering,
+    });
+
+    if (orderingExist) {
+      return res.status(409).json({
+        success: false,
+        message: "This question ordering will be unique",
+      });
+    }
+
 
     // 3️⃣ Handle image upload (Cloudinary)
     let image = "";
@@ -77,6 +92,7 @@ exports.addQuestion = async (req, res) => {
       option3,
       option4,
       option5,
+      ordering,
       correctoption,
       answerreason,
       image,
@@ -121,9 +137,9 @@ exports.allQuestion = async (req, res) => {
 
     let question;
     if (userRole != 1) {
-      question = await questionModel.find({ status: 1 });
+      question = await questionModel.find({ status: 1 }).sort({ ordering: 1 });
     } else {
-      question = await questionModel.find({});
+      question = await questionModel.find({}).sort({ ordering: -1 });
     }
 
     return res.status(200).send({
@@ -152,6 +168,22 @@ exports.editQuestion = async (req, res) => {
       return res.status(404).json({ success: false, message: "Question not found" });
 
     const updateData = { ...req.body };
+
+
+    // ✅ Duplicate check (exclude current document)
+    if (updateData.ordering) {
+      const orderingExist = await questionModel.findOne({
+        ordering: updateData.ordering,
+        _id: { $ne: id }, // exclude current document
+      });
+
+      if (orderingExist) {
+        return res.status(200).json({
+          success: false,
+          message: "Ordering already exists. Please use another number.",
+        });
+      }
+    }
 
     // IMAGE
     if (req.files?.image?.[0]) {

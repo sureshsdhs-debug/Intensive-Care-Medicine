@@ -24,9 +24,9 @@ exports.authMiddleware = async (req, res, next) => {
     if (!decoded.userId) {
       return res.status(403).json({
         success: false,
-        message: "Access denied!",
+        message: "Access denied!", 
       });
-    }
+    } 
 
     // const student = await Student.findById(decoded.userId);
 
@@ -46,7 +46,7 @@ exports.authMiddleware = async (req, res, next) => {
   } catch (error) {
     return res.status(401).json({
       success: false,
-      message: "Invalid or expired token",
+      message: "Invalid or expired token", 
     });
   }
 };

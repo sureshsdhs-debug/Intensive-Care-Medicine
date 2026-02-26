@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 // import defaultImage from "../../assets/banner.jpg";
 import { useUser } from "../../context/UserContext";
 import "../../assets/questionstyle.css"
+import api from "../../utils/api";
 
 /**
  * QuestionWidget
@@ -28,21 +29,27 @@ const QuestionWidget = ({ pageIndex, isManualNavigation, setIsManualNavigation }
 
   const fetchAllQuestion = useCallback(async () => {
     try {
-      const { data } = await axios.get(
+      const { data } = await api.get(
         `${BACKEND_BASE_URL}/api/question/get-all`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      if (data?.success) setQuestions(data.question || []);
-      else toast.error("Failed to fetch questions");
+      
+      if (data?.success){
+        setQuestions(data.question || []);
+      }
+      else{
+        toast.error("Failed to fetch questions");
+      }
     } catch (err) {
       toast.error(err?.response?.data?.message || "Error fetching questions");
     }
-  }, [BACKEND_BASE_URL]);
+  }, [BACKEND_BASE_URL,token]);
 
-  useEffect(() => {
-    fetchAllQuestion();
-  }, []);
+    useEffect(() => {
+      if (token) {
+        fetchAllQuestion();
+      }
+    }, [fetchAllQuestion, token]);
 
 
   const fetchThisUserResult = useCallback(async () => {
@@ -87,40 +94,7 @@ const QuestionWidget = ({ pageIndex, isManualNavigation, setIsManualNavigation }
     return q[q.correctoption] ?? null;
   }, []);
 
-
-  /* ----------------------------------------
-      SYNC SERVER RESULTS → STATE
-   ---------------------------------------- */
-  // useEffect(() => {
-  //   if (!serverResults.length || !questionMap.size) return;
-
-  //   const newSelected = {};
-  //   const newSubmitted = new Set();
-  //   const newResults = {};
-
-  //   serverResults.forEach(r => {
-  //     const qId = String(r.questionid);
-  //     const qObj = questionMap.get(qId);
-  //     if (!qObj) return;
-
-  //     const selectedText = qObj[r.selectedoption];
-  //     const correctValue = resolveCorrectValue(qObj);
-
-  //     const isCorrect =
-  //       selectedText && correctValue
-  //         ? String(selectedText).trim() === String(correctValue).trim()
-  //         : null;
-
-  //     newSelected[qId] = selectedText;
-  //     newSubmitted.add(qId);
-  //     newResults[qId] = { isCorrect, correctValue };
-  //   });
-
-  //   setSelected(newSelected);
-  //   setSubmitted(newSubmitted);
-  //   setResults(newResults);
-  // }, [serverResults, questionMap, resolveCorrectValue]);
-
+ 
 
 
   useEffect(() => {
@@ -210,12 +184,12 @@ const QuestionWidget = ({ pageIndex, isManualNavigation, setIsManualNavigation }
       questions[questions.length - 1];
 
     if (isManualNavigation) {
-      console.log(isManualNavigation);
+      // console.log(isManualNavigation);
       const el = document.getElementById('first-sec');
       if (el) {
         el.scrollIntoView({
           block: "center",
-          behavior: "smooth"
+          // behavior: "smooth"
         });
       }
     } else {
@@ -225,7 +199,7 @@ const QuestionWidget = ({ pageIndex, isManualNavigation, setIsManualNavigation }
       if (el) {
         el.scrollIntoView({
           block: "center",
-          behavior: "smooth"
+          // behavior: "smooth"
         });
         hasAutoScrolled.current = true;
       }
@@ -240,11 +214,7 @@ const QuestionWidget = ({ pageIndex, isManualNavigation, setIsManualNavigation }
       setIsManualNavigation(false);
     }
   }, [pageIndex]);
-
-
-
-
-
+  
   /* ----------------------------------------
 SUBMIT ANSWER
 ---------------------------------------- */
@@ -431,7 +401,7 @@ SUBMIT ANSWER
   // inline styles (you can move these to your css file)
   const styles = {
     containerRight: { padding: 24 },
-    questionText: { fontSize: 15, marginBottom: 18, lineHeight: 1.5, fontWeight: 500 },
+    questionText: { fontSize: 20, marginBottom: 18, lineHeight: 1.5, fontWeight: 500 },
     optionRow: { display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 6, marginBottom: 10, cursor: "pointer", minHeight: 48 },
     radio: { width: 18, height: 18 },
     submitRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 18, borderTop: "1px solid #e8e8e8", paddingTop: 16 },
@@ -441,7 +411,7 @@ SUBMIT ANSWER
     progressWrap: { height: 6, borderRadius: 6, marginTop: 8, overflow: "hidden", background: "#fff" },
     percentText: { fontWeight: 600, color: "#000" },
     backToQuestionLink: { color: "#1f6fb2", cursor: "pointer", display: "inline-block", fontWeight: 500 },
-    nextButtonFloating: { display: "inline-block", background: "#132573", color: "#fff", padding: "7px 15px", borderRadius: 6, border: "none", cursor: "pointer", float: "right", marginTop: 8 }
+    nextButtonFloating: { display: "inline-block", background: "#0f7fee", color: "#fff", padding: "7px 15px", borderRadius: 6, border: "none", cursor: "pointer", float: "right", marginTop: 8 }
   };
 
   return (
@@ -673,7 +643,7 @@ SUBMIT ANSWER
                                 borderRadius: 8,
                                 border: "none",
                                 fontWeight: 700,
-                                background: sel ? "#132573" : "#c4d0d8",
+                                background: sel ? "#0f7fee" : "#c4d0d8",
                                 color: "#fff",
                                 cursor: sel ? "pointer" : "not-allowed"
                               }}
@@ -687,8 +657,8 @@ SUBMIT ANSWER
                         {isSubmitted || (isCorrect === false || isCorrect === true) ? (
                           <div style={{ marginTop: 12 }}>
                             <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
-                              <button style={{ padding: "7px 15px", borderRadius: 6, border: "1px solid #ccc", background: "#132573", fontWeight: 500 }} onClick={() => nextChallenge(index)}>NEXT CHALLENGE <i className="bi bi-arrow-right"></i></button>
-                              <button style={{ padding: "7px 15px", borderRadius: 6, border: "none", background: "#132573", color: "#fff", fontWeight: 500 }} onClick={() => tryAgain(id)}><i className="bi bi-arrow-clockwise"></i> TRY AGAIN</button>
+                              <button style={{ padding: "7px 15px", borderRadius: 6, border: "1px solid #ccc", background: "#0f7fee", fontWeight: 500 }} onClick={() => nextChallenge(index)}>NEXT CHALLENGE <i className="bi bi-arrow-right"></i></button>
+                              <button style={{ padding: "7px 15px", borderRadius: 6, border: "none", background: "#0f7fee", color: "#fff", fontWeight: 500 }} onClick={() => tryAgain(id)}><i className="bi bi-arrow-clockwise"></i> TRY AGAIN</button>
                             </div>
                           </div>
                         ) : (

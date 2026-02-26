@@ -16,9 +16,9 @@ font-family: "Poppins", sans-serif;
 --background-color4: #cad7fda4; 
 --primary-color: #4b49ac; 
 --secondary-color: #0c007d; 
---Border-color: #132573; 
---one-use-color: #132573; 
---two-use-color: #132573; 
+--Border-color: #0c125c; 
+--one-use-color: #0c125c; 
+--two-use-color: #0c125c; 
 } 
 body { 
 background-color: var(--background-color4); 
@@ -49,7 +49,7 @@ align-items: center;
 .logo { 
 font-size: 27px; 
 font-weight: 600; 
-color:#132573; 
+color:#0c125c; 
 } 
 
 .icn { 
@@ -300,21 +300,21 @@ border-bottom: 2px solid rgba(0, 20, 151, 0.59);
 .recent-Articles { 
 font-size: 30px; 
 font-weight: 600; 
-color: #132573; 
+color: #0c125c; 
 } 
 
 .view { 
 height: 35px; 
 width: 90px; 
 border-radius: 8px; 
-background-color: #132573; 
+background-color: #0c125c; 
 color: white; 
 font-size: 15px; 
 border: none; 
 cursor: pointer; 
 } 
 .btn-voilate{
-    background-color: #132573;
+    background-color: #0c125c;
     color: #fff;
 }
 .btn-voilate:hover{
@@ -606,18 +606,62 @@ border-radius: 4px;
     background: #0056b3;
 }
 .bg-light-voilate{
-       background-color: #132573;
+       background-color: #0c125c;
     color: #fff;
 }
-.logout-btn{background: #132573;}
+.logout-btn{background: #0c125c;}
 .logosec p{
     color: #000;
     cursor: pointer;
 }
 
-.active-menu {
+/* .active-menu {
   color: #0d6efd;
   font-weight: 600;
-  border-bottom: 2px solid #132573;
+  border-bottom: 2px solid #0c125c;
+} */
+
+
+.custom-offcanvas {
+  width: 320px;
 }
 
+.menu-item {
+  padding: 14px 20px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  border-left: 4px solid transparent;
+  transition: all 0.25s ease;
+}
+
+.menu-item:hover {
+  background-color: #f5f6fa;
+  padding-left: 24px;
+}
+
+.active-menu {
+  background-color: #eef2ff;
+  border-left: 4px solid #0f7fee;
+  color: #0f7fee;
+  font-weight: 600;
+}
+.logo-class{
+    width: 65%;
+}
+
+.logosec >button:hover{
+        background: #0f7fee!important;
+        color: #ffffff !important;
+}
+
+.logosec >button{
+        background: #0f7fee!important;
+        color: #ffffff !important;
+}
+.controls> button{
+    background: #0f7fee;
+}
+.text-color{
+        color: #0f7fee;
+}

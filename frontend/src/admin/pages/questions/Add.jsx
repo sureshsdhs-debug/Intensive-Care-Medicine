@@ -28,6 +28,7 @@ const Add = () => {
     option5: "",
     answerreason: "",
     correctoption: [],
+    ordering: "",
   });
 
 
@@ -50,6 +51,7 @@ const Add = () => {
       formData.append("option3", inputs.option3);
       formData.append("option4", inputs.option4);
       formData.append("option5", inputs.option5);
+      formData.append("ordering", inputs.ordering);
       formData.append("answerreason", inputs.answerreason);
       // formData.append("correctoption", inputs.correctoption);
 
@@ -182,7 +184,7 @@ const Add = () => {
                 </div>
               </div>
 
-              <div className="col-md-6 mb-3">
+              <div className="col-md-4 mb-3">
                 <label>Question Type</label>
                 <select
                   name="questiontype"
@@ -203,7 +205,7 @@ const Add = () => {
                 </select>
               </div>
 
-              <div className="col-md-6">
+              <div className="col-md-4">
                 <div className="mb-3">
                   <label className="form-label">Status</label>
                   <select className="form-select form-controle" name="status" onChange={handleChange} value={inputs.status}>
@@ -212,6 +214,20 @@ const Add = () => {
                   </select>
                 </div>
               </div>
+
+               <div className="col-md-4 mb-3">
+                <label>Ordering <span className="text-danger"><b>*</b></span></label>
+                <input
+                  name="ordering"
+                  type="number"
+                  className="form-control"
+                  onChange={handleChange}
+                  value={inputs.ordering}
+                  required
+                />
+              </div>
+
+
 
               <div className="col-md-2">
                 <div className="mb-3">

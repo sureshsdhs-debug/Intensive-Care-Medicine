@@ -34,6 +34,7 @@ const Edit = () => {
     option5: "",
     correctoption: [],
     answerreason: "",
+    ordering:"",
     // we do not store binary audio here; backend returns path/url
   });
 
@@ -45,7 +46,8 @@ const Edit = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      if (data?.success) {
+      if (data?.success) { 
+        
         const correct = data.question.correctoption;
         // console.log(data.question);
         setInputs({
@@ -62,6 +64,7 @@ const Edit = () => {
           status: data.question.status,
           answeraudio: data.question.answeraudio,
           answerreason: data.question.answerreason,
+          ordering: data.question.ordering,
 
         });
 
@@ -172,6 +175,7 @@ const Edit = () => {
       formData.append("option3", inputs.option3);
       formData.append("option4", inputs.option4);
       formData.append("option5", inputs.option5);
+      formData.append("ordering", inputs.ordering);
       // formData.append("correctoption", inputs.correctoption);
 
       if (inputs.questiontype === "Multiple Question") {
@@ -254,7 +258,7 @@ const Edit = () => {
                 />
               </div>
 
-              <div className="col-md-6 mb-3">
+              <div className="col-md-4 mb-3">
                 <label>Question Type</label>
                 <select
                   name="questiontype"
@@ -275,7 +279,7 @@ const Edit = () => {
                 </select>
               </div>
 
-              <div className="col-md-6 mb-3">
+              <div className="col-md-4 mb-3">
                 <label>Status</label>
                 <select
                   name="status"
@@ -286,6 +290,18 @@ const Edit = () => {
                   <option value={1}>Active</option>
                   <option value={2}>InActive</option>
                 </select>
+              </div>
+
+              <div className="col-md-4 mb-3">
+                <label>Ordering <span className="text-danger"><b>*</b></span></label>
+                <input
+                  name="ordering"
+                  type="number"
+                  className="form-control"
+                  onChange={handleChange}
+                  value={inputs.ordering}
+                  required
+                />
               </div>
 
               <div className="col-md-2 mb-3">

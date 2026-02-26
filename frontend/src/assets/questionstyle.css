@@ -75,5 +75,5 @@
 display:flex; gap: 12px; align-items: center;
 }
 .question-back-button >button{
-  padding: 7px 10px; border-radius: 6px; border: 1px solid #ccc; background: #132573; font-weight: 500;
+  padding: 7px 10px; border-radius: 6px; border: 1px solid #ccc; background: #0f7fee; font-weight: 500;
 }
