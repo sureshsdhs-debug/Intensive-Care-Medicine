@@ -42,10 +42,17 @@
   }
 
   /* Buttons full width */
+    .prebutton {
+    width: 47% !important;
+    text-align: center;
+  }
+
   .question-answer button {
     width: 35%;
     text-align: center;
   }
+
+
 
   /* Next Challenge floating button */
   .question-answer button[style*="NEXT CHALLENGE"] {

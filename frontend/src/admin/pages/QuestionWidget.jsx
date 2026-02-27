@@ -400,11 +400,11 @@ SUBMIT ANSWER
 
   // inline styles (you can move these to your css file)
   const styles = {
-    containerRight: { padding: 24 },
+    containerRight: { padding: "0px 24px" },
     questionText: { fontSize: 20, marginBottom: 18, lineHeight: 1.5, fontWeight: 500 },
     optionRow: { display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", borderRadius: 6, cursor: "pointer"},
     radio: { width: 18, height: 18 },
-    submitRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 18, borderTop: "1px solid #e8e8e8", paddingTop: 16 },
+    submitRow: { display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #e8e8e8", paddingTop: 16 },
     item: { marginBottom: 18 },
     circle: { width: 26, height: 26, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", marginRight: 12, border: "2px solid #2b5db5", color: "#2b5db5" },
     circleActive: { width: 26, height: 26, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", marginRight: 12, background: "#22c55e", color: "#fff" },
@@ -442,7 +442,7 @@ SUBMIT ANSWER
 
         return (
           // <section id={`q-${id}`} className="page front-page-div question-answer" key={id} style={{ marginBottom: 31 }}>
-          <section id={`q-${id}`} className="question-answer mt-3" key={id}>
+          <section id={`q-${id}`} className="question-answer mt-1" key={id}>
             <div className="container-fluid p-0">
               <div className="row">
                 {/* left image */}
@@ -621,9 +621,9 @@ SUBMIT ANSWER
                           {/* {!isSubmitted && ( */}
 
                           <div className="question-back-button">
-                            {serverResults.length > 0 && index > 0 && (
+                            {/* {serverResults.length > 0 && index > 0 && (
                               <button onClick={() => prevChallenge(index)}> <i className="bi bi-arrow-left"></i> Back</button>
-                            )}
+                            )} */}
                             <a href="#"
                               onClick={(e) => { e.preventDefault(); setShowStats(prev => ({ ...prev, [id]: true })); }}
                               style={{ color: "#1f6fb2" }}>
@@ -657,8 +657,8 @@ SUBMIT ANSWER
                         {isSubmitted || (isCorrect === false || isCorrect === true) ? (
                           <div style={{ marginTop: 12 }}>
                             <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
-                              <button style={{ padding: "7px 15px", borderRadius: 6, border: "1px solid #ccc", background: "#0f7fee", fontWeight: 500 }} onClick={() => nextChallenge(index)}>NEXT CHALLENGE <i className="bi bi-arrow-right"></i></button>
-                              <button style={{ padding: "7px 15px", borderRadius: 6, border: "none", background: "#0f7fee", color: "#fff", fontWeight: 500 }} onClick={() => tryAgain(id)}><i className="bi bi-arrow-clockwise"></i> TRY AGAIN</button>
+                              <button style={{ padding: "7px 15px", borderRadius: 6, border: "1px solid #ccc", background: "#0f7fee", fontWeight: 500 }} onClick={() => nextChallenge(index)} className="prebutton">NEXT <i className="bi bi-arrow-right"></i></button>
+                              <button style={{ padding: "7px 15px", borderRadius: 6, border: "none", background: "#0f7fee", color: "#fff", fontWeight: 500 }} onClick={() => tryAgain(id)} className="prebutton"><i className="bi bi-arrow-clockwise"></i> TRY AGAIN</button>
                             </div>
                           </div>
                         ) : (

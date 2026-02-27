@@ -582,7 +582,8 @@ body {
 
   .pager {
     /* height: 100vh; */
-    overflow: hidden;
+    /* overflow: hidden; */
+    margin-bottom: 20px;
   }
 
   .page {
@@ -600,6 +601,7 @@ body {
     overflow-y: auto;
     display: block !important;
     padding: 16px !important;
+    height: auto;
   }
  
 
@@ -652,6 +654,6 @@ body {
 
   .left-image-div img{
     object-fit: cover;
-    height: 42vh;
+    height: 30vh!important;
   }
 }
