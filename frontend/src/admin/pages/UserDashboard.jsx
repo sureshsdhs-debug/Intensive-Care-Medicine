@@ -145,7 +145,8 @@ export const UserDashboard = ({ getRole, roleAuth, pageIndex, setPageIndex, isMa
     }}>
       {token && !roleAuth && (
         <div>
-          <div className="pager">
+          
+          <div className="pager" id="page-content">
             <section className="page active front-page-div" id="first-sec">
               <div className="container-fluid p-0">
                 <div className="front-page-shape">

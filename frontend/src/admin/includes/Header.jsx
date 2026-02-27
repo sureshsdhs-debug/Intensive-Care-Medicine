@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '../../auth/AuthProvider';
 import { Link } from 'react-router-dom';
 import logo from "../../assets/icm-logo.png";
+import GlobalPageSearch from '../../context/GlobalPageSearch';
 const Header = ({ getRole, pageIndex, setPageIndex, setIsManualNavigation }) => {
   const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const { token, logoutAction, role } = useAuth();
@@ -58,6 +59,10 @@ const Header = ({ getRole, pageIndex, setPageIndex, setIsManualNavigation }) => 
             <img className='logo-class' src={logo} alt="Logo" /> </div>
         </Link> 
       </div>
+ <div className="logosec">
+         <GlobalPageSearch />
+ </div>
+
       {role !=1 && (
       <div className="logosec">
         <button className="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">

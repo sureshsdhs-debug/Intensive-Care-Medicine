@@ -403,6 +403,45 @@ header {
     border-radius: 4px;
 }
 
+/* search bar css start  */
+.content-search-bar {
+    position: fixed;
+    top: 10px;
+    right: 75px;
+    background: #111;
+    padding: 3px 10px;
+    border-radius: 8px; 
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* width: 87vh; */
+}
+
+.content-search-bar>input {
+    border: none;
+    padding: 5px;
+    background: #ffffff;
+    border-radius: 6px;
+    color: #000;
+    font-weight: 600;
+}
+
+.content-search-bar>span {
+    color: #fff;
+}
+
+.content-search-bar>button {
+    cursor: pointer;
+    padding: 7px;
+}
+
+/* search bar css end   */
+
+
+
+
+
+
 /* Responsive CSS Here */
 @media screen and (max-width: 950px) {
     .nav-img {
@@ -487,6 +526,26 @@ header {
 }
 
 @media screen and (max-width: 490px) {
+    header {
+        height: 64px;
+        width: 100vw;
+        padding: 0 7px;
+    }
+
+    /* search bar scc start  */
+    .content-search-bar {
+        position: fixed;
+        top: 7px;
+        right: 53px;
+        width: 220px;
+            gap: 3px;
+    }
+
+    .content-search-bar>input {
+      width: 15vh;
+    }
+
+    /* search bar scc end */
     .message {
         display: none;
     }
@@ -494,14 +553,14 @@ header {
     .logosec {
         width: 100%;
         justify-content: flex-end;
-        
+
     }
 
     .logo {
         font-size: 16px;
     }
 
-   
+
 
     .second-page-div {
         display: block !important;
