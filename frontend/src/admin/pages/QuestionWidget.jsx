@@ -442,14 +442,14 @@ SUBMIT ANSWER
 
         return (
           // <section id={`q-${id}`} className="page front-page-div question-answer" key={id} style={{ marginBottom: 31 }}>
-          <section id={`q-${id}`} className="question-answer" key={id} style={{ marginBottom: 31 }}>
+          <section id={`q-${id}`} className="question-answer mt-3" key={id}>
             <div className="container-fluid p-0">
               <div className="row">
                 {/* left image */}
                 {imageSrc != null && (
                   <div className="col-lg-6 col-md-6 col-12 p-0">
                     <div className="left-image-div" style={{ padding: 24 }}>
-                      <img src={imageSrc} alt="Question Image" style={{ width: "100%", height: "auto", borderRadius: 8, objectFit: "cover", }} />
+                      <img src={imageSrc} alt="Question Image" style={{ width: "100%", height: "60vh", borderRadius: 8, objectFit: "cover", }} />
                     </div>
                   </div>
                 )}
@@ -457,7 +457,7 @@ SUBMIT ANSWER
                 <div className={`${(imageSrc != null) ? "col-lg-6 col-md-6 col-12" : "col-lg-12 col-md-12 col-12"} p-0`}>
                   <div style={styles.containerRight}>
                     {/* question text always on top */}
-                    <h4 style={styles.questionText}>{q.questiontext}</h4>
+                    <h4 style={styles.questionText}>Q:{q.ordering} - {q.questiontext}</h4>
 
                     {/* stats view */}
                     {showStats[id] ? (

@@ -21,21 +21,12 @@ const Header = ({ getRole, pageIndex, setPageIndex, setIsManualNavigation }) => 
 
   // Logout handler
   const handleLogout = async () => {
-    try {
-      let response;
-
-      if (role === "1") {
-        response = await axios.get(
-          `${BACKEND_BASE_URL}/api/user/logout`,
-          { withCredentials: true }
-        );
-      } else {
-        response = await axios.get(
+    try { 
+       let response = await axios.get(
           `${BACKEND_BASE_URL}/api/student/logout`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
-      }
-
+      
       const { data } = response;
 
       if (data?.success) {
@@ -65,9 +56,9 @@ const Header = ({ getRole, pageIndex, setPageIndex, setIsManualNavigation }) => 
         <Link to="/dashboard" onClick={() => goTo(0)}>
           <div className="logo">
             <img className='logo-class' src={logo} alt="Logo" /> </div>
-        </Link>
-
+        </Link> 
       </div>
+      {role !=1 && (
       <div className="logosec">
         <button className="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
           <i className="bi bi-list"></i>
@@ -107,26 +98,14 @@ const Header = ({ getRole, pageIndex, setPageIndex, setIsManualNavigation }) => 
                 {item}
               </div>
             ))}
+
+            <p onClick={handleLogout} className="menu-item logout-btn">
+              <i className="bi bi-box-arrow-right"></i> Logout
+            </p>
           </div>
-        </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <button onClick={handleLogout} className="logout-btn">
-          <i className="bi bi-box-arrow-right"></i> Logout
-        </button>
+        </div> 
       </div>
+      )}
     </header>
   );
 };

@@ -3,18 +3,41 @@ import React, { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from '../../auth/AuthProvider';
-
 const Nav = ({ getRole, roleAuth }) => {
 
     const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
     // const { logoutAction } = useAuth();
     const location = useLocation();
-    const { token } = useAuth();
- 
+    const { token, logoutAction } = useAuth();
+
 
     useEffect(() => {
         getRole();
     }, [roleAuth])
+
+
+
+    // Logout handler
+    const handleLogout = async () => {
+        try {
+            let response = await axios.get(
+                `${BACKEND_BASE_URL}/api/user/logout`,
+                { withCredentials: true }
+            );
+
+            const { data } = response;
+
+            if (data?.success) {
+                toast.success(data.message);
+                logoutAction();
+            } else {
+                toast.error(data.message || "Logout failed");
+            }
+        } catch (error) {
+            toast.error("Logout failed. Please try again.");
+        }
+    };
+
 
     return (
         <div>
@@ -22,7 +45,6 @@ const Nav = ({ getRole, roleAuth }) => {
                 <div className="navcontainer">
                     <nav className="nav">
                         <div className="nav-upper-options">
-                            {/* {(token) && */}
                             <Link to="/dashboard" className={location.pathname === "/dashboard" ? "active" : ""}>
                                 <div className="nav-option">
                                     <i className="bi bi-laptop"></i>
@@ -38,22 +60,7 @@ const Nav = ({ getRole, roleAuth }) => {
                                     </div>
                                 </Link>
                             }
-                            {/* {(token && roleAuth) &&
-                                <Link to="/subjects" className={location.pathname === "/subjects" ? "active" : ""}>
-                                    <div className="nav-option">
-                                        <i className="bi bi-book"></i>
-                                        <h3>Subjects</h3>
-                                    </div>
-                                </Link>
-                            }
-                            {(token && roleAuth) &&
-                                <Link to="/courses" className={location.pathname === "/courses" ? "active" : ""}>
-                                    <div className="nav-option">
-                                        <i className="bi bi-bookshelf"></i>
-                                        <h3>Courses</h3>
-                                    </div>
-                                </Link>
-                            } */}
+
                             {(token && roleAuth) &&
                                 <Link to="/questions" className={location.pathname === "/questions" ? "active" : ""}>
                                     <div className="nav-option">
@@ -62,14 +69,7 @@ const Nav = ({ getRole, roleAuth }) => {
                                     </div>
                                 </Link>
                             }
-                            {/* {(token && roleAuth) &&
-                                <Link to="/exams" className={location.pathname === "/exams" ? "active" : ""}>
-                                    <div className="nav-option">
-                                        <i className="bi bi-pc-display"></i>
-                                        <h3>Exams</h3>
-                                    </div>
-                                </Link>
-                            } */}
+
                             {(token && roleAuth) &&
                                 <Link to="/table-of-contents" className={location.pathname === "/table-of-contents" ? "active" : ""}>
                                     <div className="nav-option">
@@ -87,11 +87,11 @@ const Nav = ({ getRole, roleAuth }) => {
                                 </Link>
                             }
 
-                            {/* {token &&
+                            {token &&
                                 <div className="nav-option logout" onClick={handleLogout}>
-                                    <i className="bi bi-box-arrow-left"></i>
+                                    <i className="bi bi-box-arrow-right"></i>
                                     <h3>Logout</h3>
-                                </div>} */}
+                                </div>}
                         </div>
                     </nav>
                 </div>

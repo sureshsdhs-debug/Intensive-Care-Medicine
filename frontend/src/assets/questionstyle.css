@@ -43,13 +43,13 @@
 
   /* Buttons full width */
   .question-answer button {
-    width: 100%;
+    width: 35%;
     text-align: center;
   }
 
   /* Next Challenge floating button */
   .question-answer button[style*="NEXT CHALLENGE"] {
-    width: 100%;
+    width: 35%;
     margin-top: 12px;
   }
 
