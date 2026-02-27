@@ -408,7 +408,7 @@ header {
     position: fixed;
     top: 10px;
     right: 75px;
-    background: #111;
+    background: #0f7fee;
     padding: 3px 10px;
     border-radius: 8px; 
     display: flex;
@@ -433,6 +433,8 @@ header {
 .content-search-bar>button {
     cursor: pointer;
     padding: 7px;
+    background-color: #0f7fee;
+    border: 1px solid #fff;
 }
 
 /* search bar css end   */
