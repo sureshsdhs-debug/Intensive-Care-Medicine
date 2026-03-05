@@ -9,6 +9,7 @@ const Register = () => {
   const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const navigate = useNavigate();
   const { loginAction } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const [inputs, setInputs] = useState({
     name: "",
@@ -26,6 +27,8 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
+    return false;
     try {
       const { data } = await axios.post(
         `${BACKEND_BASE_URL}/api/student/add`,
@@ -41,6 +44,8 @@ const Register = () => {
       }
     } catch (error) {
       toast.error("Something went wrong");
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -129,7 +134,9 @@ const Register = () => {
               </div>
             </div>
 
-            <button className="auth-btn">Sign Up</button>
+            <button className="auth-btn" disabled={loading}>
+              {loading ? 'Signing...' : 'Sign Up'}
+            </button>
 
             <p className="auth-footer">
               Already have an account? <Link to="/login">Login</Link>

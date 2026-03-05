@@ -9,6 +9,7 @@ const Login = () => {
   const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const navigate = useNavigate();
   const { loginAction } = useAuth();
+const [loading, setLoading] = useState(false);
 
   const [inputs, setInputs] = useState({
     email: "",
@@ -18,6 +19,8 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+      setLoading(true); // disable button & change text
+       
     const formData = {
       email: inputs.email,
       password: inputs.password,
@@ -46,7 +49,9 @@ const Login = () => {
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
-    }
+    } finally {
+    setLoading(false); // enable button again
+  }
   };
 
   const handleChange = (e) => {
@@ -109,8 +114,8 @@ const Login = () => {
               />
             </div>
 
-            <button type="submit" className="login-btn">
-              Login
+            <button type="submit" className="login-btn" disabled={loading}>
+              {loading ? "Logging..." : "Login"}
             </button>
 
             <p className="login-footer-text">

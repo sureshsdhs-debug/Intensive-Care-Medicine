@@ -164,6 +164,13 @@
   text-decoration: underline;
 }
 
+
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+
 /* Responsive */
 @media (max-width: 768px) {
   .login-card {
@@ -178,3 +185,5 @@
     padding: 28px 22px;
   }
 }
+
+
