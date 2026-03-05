@@ -31,6 +31,10 @@ const createSchema = new mongoose.Schema(
     option3: { type: String, required: true },
     option4: { type: String, required: true },
     option5: { type: String, default: "" },
+    option6: { type: String, default: "" },
+    option7: { type: String, default: "" },
+    option8: { type: String, default: "" },
+    option9: { type: String, default: "" }, 
 
     correctoption: {
       type: [String],
@@ -55,6 +59,10 @@ const createSchema = new mongoose.Schema(
       option3: { type: Number, default: 0 },
       option4: { type: Number, default: 0 },
       option5: { type: Number, default: 0 },
+      option6: { type: Number, default: 0 },
+      option7: { type: Number, default: 0 },
+      option8: { type: Number, default: 0 },
+      option9: { type: Number, default: 0 },
     },
 
     totalResponses: {

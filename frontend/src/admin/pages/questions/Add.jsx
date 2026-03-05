@@ -26,6 +26,10 @@ const Add = () => {
     option3: "",
     option4: "",
     option5: "",
+    option6: "",
+    option7: "",
+    option8: "",
+    option9: "",
     answerreason: "",
     correctoption: [],
     ordering: "",
@@ -51,6 +55,10 @@ const Add = () => {
       formData.append("option3", inputs.option3);
       formData.append("option4", inputs.option4);
       formData.append("option5", inputs.option5);
+      formData.append("option6", inputs.option6);
+      formData.append("option7", inputs.option7);
+      formData.append("option8", inputs.option8);
+      formData.append("option9", inputs.option9);
       formData.append("ordering", inputs.ordering);
       formData.append("answerreason", inputs.answerreason);
       // formData.append("correctoption", inputs.correctoption);
@@ -303,6 +311,62 @@ const Add = () => {
                 </div>
               </div>
 
+              <div className="col-md-2">
+                <div className="mb-3">
+                  <label className="form-label">Option 6</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="option6"
+                    onChange={handleChange}
+                    value={inputs.option6}
+                    placeholder="Ex. 234"
+                  />
+                </div>
+              </div>
+
+              <div className="col-md-2">
+                <div className="mb-3">
+                  <label className="form-label">Option 7</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="option7"
+                    onChange={handleChange}
+                    value={inputs.option7}
+                    placeholder="Ex. 234"
+                  />
+                </div>
+              </div>
+
+              <div className="col-md-2">
+                <div className="mb-3">
+                  <label className="form-label">Option 8</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="option8"
+                    onChange={handleChange}
+                    value={inputs.option8}
+                    placeholder="Ex. 234"
+                  />
+                </div>
+              </div>
+
+              <div className="col-md-2">
+                <div className="mb-3">
+                  <label className="form-label">Option 9</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="option9"
+                    onChange={handleChange}
+                    value={inputs.option9}
+                    placeholder="Ex. 234"
+                  />
+                </div>
+              </div>
+
                <div className="col-md-12 mb-3">
                 <label>
                   Correct Option <span className="text-danger"><b>*</b></span>
@@ -310,7 +374,7 @@ const Add = () => {
 
                 {inputs.questiontype === "Multiple Question" ? (
                   // ✅ MULTIPLE (CHECKBOX)
-                  ["option1", "option2", "option3", "option4", "option5"].map((opt) =>
+                  ["option1", "option2", "option3", "option4", "option5", "option6", "option7", "option8", "option9"].map((opt) =>
                     inputs[opt] ? (
                       <div className="form-check" key={opt}>
                         <input
@@ -335,7 +399,7 @@ const Add = () => {
                   )
                 ) : (
                   // ✅ SINGLE (RADIO)
-                  ["option1", "option2", "option3", "option4", "option5"].map((opt) =>
+                  ["option1", "option2", "option3", "option4", "option5", "option6", "option7", "option8", "option9"].map((opt) =>
                     inputs[opt] ? (
                       <div className="form-check" key={opt}>
                         <input

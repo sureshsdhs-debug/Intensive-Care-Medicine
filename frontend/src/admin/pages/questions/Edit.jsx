@@ -32,6 +32,10 @@ const Edit = () => {
     option3: "",
     option4: "",
     option5: "",
+    option6: "",
+    option7: "",
+    option8: "",
+    option9: "",
     correctoption: [],
     answerreason: "",
     ordering:"",
@@ -58,6 +62,10 @@ const Edit = () => {
           option3: data.question.option3,
           option4: data.question.option4,
           option5: data.question.option5,
+          option6: data.question.option6,
+          option7: data.question.option7,
+          option8: data.question.option8,
+          option9: data.question.option9,
           // correctoption: data.question.correctoption,
           correctoption: Array.isArray(correct) ? correct : correct ? [correct] : [],
 
@@ -175,6 +183,10 @@ const Edit = () => {
       formData.append("option3", inputs.option3);
       formData.append("option4", inputs.option4);
       formData.append("option5", inputs.option5);
+      formData.append("option6", inputs.option6);
+      formData.append("option7", inputs.option7);
+      formData.append("option8", inputs.option8);
+      formData.append("option9", inputs.option9);
       formData.append("ordering", inputs.ordering);
       // formData.append("correctoption", inputs.correctoption);
 
@@ -348,6 +360,7 @@ const Edit = () => {
                   required
                 />
               </div>
+              
               <div className="col-md-2 mb-3">
                 <label>Option 5 </label>
                 <input
@@ -359,6 +372,50 @@ const Edit = () => {
                 />
               </div>
 
+              <div className="col-md-2 mb-3">
+                <label>Option 6 </label>
+                <input
+                  name="option6"
+                  type="text"
+                  className="form-control"
+                  onChange={handleChange}
+                  value={inputs.option6}
+                />
+              </div>
+
+              <div className="col-md-2 mb-3">
+                <label>Option 7 </label>
+                <input
+                  name="option7"
+                  type="text"
+                  className="form-control"
+                  onChange={handleChange}
+                  value={inputs.option7}
+                />
+              </div>
+
+              <div className="col-md-2 mb-3">
+                <label>Option 8 </label>
+                <input
+                  name="option8"
+                  type="text"
+                  className="form-control"
+                  onChange={handleChange}
+                  value={inputs.option8}
+                />
+              </div>
+
+              <div className="col-md-2 mb-3">
+                <label>Option 9 </label>
+                <input
+                  name="option9"
+                  type="text"
+                  className="form-control"
+                  onChange={handleChange}
+                  value={inputs.option9}
+                />
+              </div>
+
               <div className="col-md-12 mb-3">
                 <label>
                   Correct Option <span className="text-danger"><b>*</b></span>
@@ -366,7 +423,7 @@ const Edit = () => {
 
                 {inputs.questiontype === "Multiple Question" ? (
                   // ✅ MULTIPLE (CHECKBOX)
-                  ["option1", "option2", "option3", "option4", "option5"].map((opt) =>
+                  ["option1", "option2", "option3", "option4", "option5", "option6", "option7", "option8", "option9"].map((opt) =>
                     inputs[opt] ? (
                       <div className="form-check" key={opt}>
                         <input
@@ -391,7 +448,7 @@ const Edit = () => {
                   )
                 ) : (
                   // ✅ SINGLE (RADIO)
-                  ["option1", "option2", "option3", "option4", "option5"].map((opt) =>
+                  ["option1", "option2", "option3", "option4", "option5", "option6", "option7", "option8", "option9"].map((opt) =>
                     inputs[opt] ? (
                       <div className="form-check" key={opt}>
                         <input

@@ -373,7 +373,7 @@ SUBMIT ANSWER
   const buildStats = (q) => {
     if (q.stats && typeof q.stats === "object") {
       const stats = [];
-      ["option1", "option2", "option3", "option4", "option5"].forEach(k => {
+      ["option1", "option2", "option3", "option4", "option5", "option6", "option7", "option8", "option9"].forEach(k => {
         if (q[k]) stats.push({ key: k, text: q[k], percent: Number(q.stats[k]) || 0 });
       });
       const total = stats.reduce((s, it) => s + it.percent, 0);
@@ -387,7 +387,7 @@ SUBMIT ANSWER
       return stats;
     }
 
-    const keys = ["option1", "option2", "option3", "option4", "option5"].filter(k => q[k]);
+    const keys = ["option1", "option2", "option3", "option4", "option5", "option6", "option7", "option8", "option9"].filter(k => q[k]);
     if (!keys.length) return [];
     // sample distribution for 4 options (like your screenshots)
     if (keys.length === 4) {
@@ -401,13 +401,13 @@ SUBMIT ANSWER
   // inline styles (you can move these to your css file)
   const styles = {
     containerRight: { padding: "0px 24px" },
-    questionText: { fontSize: 20, marginBottom: 18, lineHeight: 1.5, fontWeight: 500 },
+    questionText: { fontSize: 20, marginBottom: 0, lineHeight: 1.5, fontWeight: 500 },
     optionRow: { display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", borderRadius: 6, cursor: "pointer"},
     radio: { width: 18, height: 18 },
-    submitRow: { display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #e8e8e8", paddingTop: 16 },
+    submitRow: { display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #e8e8e8", borderBottom: "1px solid #e8e8e8", padding: 5 },
     item: { marginBottom: 18 },
-    circle: { width: 26, height: 26, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", marginRight: 12, border: "2px solid #2b5db5", color: "#2b5db5" },
-    circleActive: { width: 26, height: 26, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", marginRight: 12, background: "#22c55e", color: "#fff" },
+    circle: { width: 20, height: 20, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", marginRight: 12, border: "2px solid #2b5db5", color: "#2b5db5" },
+    circleActive: { width: 20, height: 20, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", marginRight: 12, background: "#22c55e", color: "#fff" },
     progressWrap: { height: 6, borderRadius: 6, marginTop: 8, overflow: "hidden", background: "#fff" },
     percentText: { fontWeight: 600, color: "#000" },
     backToQuestionLink: { color: "#1f6fb2", cursor: "pointer", display: "inline-block", fontWeight: 500 },
@@ -421,7 +421,7 @@ SUBMIT ANSWER
 
         const isMultiple = q.questiontype === "Multiple Question";
         const id = q._id ?? q.id ?? `q-${index}`;
-        const options = ["option1", "option2", "option3", "option4", "option5"].filter(k => q[k]).map(k => ({ key: k, text: q[k] }));
+        const options = ["option1", "option2", "option3", "option4", "option5", "option6", "option7", "option8", "option9"].filter(k => q[k]).map(k => ({ key: k, text: q[k] }));
         
         const imageSrc = q?.image && typeof q.image === "string"
           ? (q.image.startsWith("http") ? q.image : `${q.image}`)
@@ -442,7 +442,7 @@ SUBMIT ANSWER
 
         return (
           // <section id={`q-${id}`} className="page front-page-div question-answer" key={id} style={{ marginBottom: 31 }}>
-          <section id={`q-${id}`} className="question-answer mt-1" key={id}>
+          <section id={`q-${id}`} className="question-answer mt-3" key={id}>
             <div className="container-fluid p-0">
               <div className="row">
                 {/* left image */}
@@ -471,7 +471,7 @@ SUBMIT ANSWER
                                 const isCorrectOption = isMultiple ? q.correctoption.includes(s.key) : s.key === correctOptionKey[0];
                            
                                 return (
-                                  <div key={s.key} className="item" style={styles.item}>
+                                  <div key={s.key} className="item">
                                     <div style={{ display: "flex", alignItems: "center" }}>
                                       <div style={isCorrectOption ? styles.circle : styles.circle}>{isCorrectOption ? "" : ""}</div>
                                       <div style={{ flex: 1 }}>
