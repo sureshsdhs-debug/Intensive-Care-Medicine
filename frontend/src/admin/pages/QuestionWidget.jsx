@@ -445,6 +445,9 @@ SUBMIT ANSWER
           <section id={`q-${id}`} className="question-answer mt-3" key={id}>
             <div className="container-fluid p-0">
               <div className="row">
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque, commodi illo. Optio explicabo accusamus debitis sit saepe, quidem autem cum tenetur nihil modi adipisci aut beatae vel. Nostrum, reprehenderit dolore.</p>
+                </div>
+              <div className="row">
                 {/* left image */}
                 {imageSrc != null && (
                   <div className="col-lg-6 col-md-6 col-12 p-0">

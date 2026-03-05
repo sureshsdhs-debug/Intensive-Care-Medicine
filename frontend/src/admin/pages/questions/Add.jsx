@@ -18,6 +18,7 @@ const Add = () => {
   const [audioPreviewUrl, setAudioPreviewUrl] = useState(null); // for newly selected audio
 
   const [inputs, setInputs] = useState({
+    questionremark: "",
     questiontext: "",
     questiontype: "Single Question",
     status: 1,
@@ -47,6 +48,7 @@ const Add = () => {
     try {
       // Use FormData for file upload
       const formData = new FormData();
+      formData.append("questionremark", inputs.questionremark);
       formData.append("questiontext", inputs.questiontext);
       formData.append("questiontype", inputs.questiontype);
       formData.append("status", inputs.status);
@@ -112,7 +114,7 @@ const Add = () => {
     }));
   };
 
- 
+
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -176,6 +178,23 @@ const Add = () => {
             <div className="row">
               <div className="col-md-12">
                 <div className="mb-3">
+                  <label htmlFor="questionremark" className="form-label">
+                    Question Remark  (Optional)
+                  </label>
+                  <input
+                    id="questionremark"
+                    type="text"
+                    className="form-control"
+                    name="questionremark"
+                    onChange={handleChange}
+                    value={inputs.questionremark}
+                    placeholder="" 
+                  />
+                </div>
+              </div>
+
+              <div className="col-md-12">
+                <div className="mb-3">
                   <label htmlFor="questiontext" className="form-label">
                     Question Text <span className="text-danger"><b>*</b></span>
                   </label>
@@ -186,7 +205,7 @@ const Add = () => {
                     name="questiontext"
                     onChange={handleChange}
                     value={inputs.questiontext}
-                    placeholder="Ex. What is the value of 5+9 ?"
+                    placeholder="Ex."
                     required
                   />
                 </div>
@@ -223,7 +242,7 @@ const Add = () => {
                 </div>
               </div>
 
-               <div className="col-md-4 mb-3">
+              <div className="col-md-4 mb-3">
                 <label>Ordering <span className="text-danger"><b>*</b></span></label>
                 <input
                   name="ordering"
@@ -367,7 +386,7 @@ const Add = () => {
                 </div>
               </div>
 
-               <div className="col-md-12 mb-3">
+              <div className="col-md-12 mb-3">
                 <label>
                   Correct Option <span className="text-danger"><b>*</b></span>
                 </label>
@@ -421,7 +440,7 @@ const Add = () => {
                         </label>
                       </div>
                     ) : null
-                  ) 
+                  )
                 )}
               </div>
 

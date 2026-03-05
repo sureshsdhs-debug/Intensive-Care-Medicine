@@ -22,6 +22,7 @@ exports.addQuestion = async (req, res) => {
       option8,
       option9,
       correctoption,
+      questionremark,
       answerreason,
       status,
       ordering
@@ -48,7 +49,7 @@ exports.addQuestion = async (req, res) => {
     const existing = await questionModel.findOne({
       questiontext: questiontext.trim(),
     });
-    
+
     if (existing) {
       return res.status(409).json({
         success: false,
@@ -91,17 +92,18 @@ exports.addQuestion = async (req, res) => {
     const newQuestion = new questionModel({
       questiontype,
       questiontext: questiontext.trim(),
-      option1,
-      option2,
-      option3,
-      option4,
-      option5,
-      option6,
-      option7,
-      option8,
-      option9,
+      option1: option1.trim(),
+      option2: option2.trim(),
+      option3: option3.trim(),
+      option4: option4.trim(),
+      option5: option5.trim(),
+      option6: option6.trim(),
+      option7: option7.trim(),
+      option8: option8.trim(),
+      option9: option9.trim(),
       ordering,
       correctoption,
+      questionremark,
       answerreason,
       image,
       image_public_id,

@@ -25,6 +25,7 @@ const Edit = () => {
 
   const [inputs, setInputs] = useState({
     questiontext: "",
+    questionremark: "",
     questiontype: "Single Question",
     status: 1,
     option1: "",
@@ -38,7 +39,7 @@ const Edit = () => {
     option9: "",
     correctoption: [],
     answerreason: "",
-    ordering:"",
+    ordering: "",
     // we do not store binary audio here; backend returns path/url
   });
 
@@ -50,11 +51,12 @@ const Edit = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      if (data?.success) { 
-        
+      if (data?.success) {
+
         const correct = data.question.correctoption;
         // console.log(data.question);
         setInputs({
+          questionremark: data.question.questionremark,
           questiontext: data.question.questiontext,
           questiontype: data.question.questiontype,
           option1: data.question.option1,
@@ -175,6 +177,7 @@ const Edit = () => {
       setLoading(true);
 
       const formData = new FormData();
+      formData.append("questionremark", inputs.questionremark);
       formData.append("questiontext", inputs.questiontext);
       formData.append("questiontype", inputs.questiontype);
       formData.append("status", inputs.status);
@@ -258,6 +261,17 @@ const Edit = () => {
         <div className="report-body">
           <form onSubmit={handleSubmit} encType="multipart/form-data">
             <div className="row">
+                  <div className="col-md-12 mb-3">
+                <label>Question Remark (Optional)</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="questionremark"
+                  onChange={handleChange}
+                  value={inputs.questionremark} 
+                />
+              </div>
+              
               <div className="col-md-12 mb-3">
                 <label>Question Text <span className="text-danger"><b>*</b></span></label>
                 <input
@@ -360,7 +374,7 @@ const Edit = () => {
                   required
                 />
               </div>
-              
+
               <div className="col-md-2 mb-3">
                 <label>Option 5 </label>
                 <input

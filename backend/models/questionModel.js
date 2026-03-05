@@ -47,6 +47,10 @@ const createSchema = new mongoose.Schema(
         message: "At least one correct option is required",
       },
     },
+  questionremark: {
+      type: String,
+      default: "",
+    },
 
     answerreason: {
       type: String,
