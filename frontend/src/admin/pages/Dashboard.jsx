@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import { useAuth } from '../../auth/AuthProvider';
 import Manage from './exams/Manage';
+import { Link } from 'react-router-dom';
 
 
 
@@ -14,106 +15,60 @@ export const Dashboard = ({ getRole, roleAuth }) => {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const { token } = useAuth();
+  const [questionCount, setQuestionCount] = useState(0)
+  const [studentCount, setStudentCount] = useState(0)
+  const [tableOfContentsCount, settableOfContentsCount] = useState(0)
+  const [publishedCount, setPublishedCount] = useState(0)
 
   useEffect(() => {
-    // console.log(roleAuth)
     getRole();
   }, [roleAuth])
 
-  // Table columns
-  const columns = [
-    // { name: "ID", selector: (row) => row.id, sortable: true },
-    { name: "Name", selector: (row) => row.name, sortable: true },
-    {
-      name: "Email", selector: (row) => row.email, sortable: true,
-      cell: (row) => (
-        <div title={row.email} className="emailCell">
-          {row.email}
-        </div>
-      ),
-    },
-    { name: "Mobile", selector: (row) => row.mobile, sortable: true },
-    // { name: "Role", selector: (row) => row.role==1? "Employee": row.role==2 ? "Project Manager"  : row.role==3 ? "SEO Manager" : row.role==4 ? "Development Manager" : "Admin", sortable: true },
-    { name: "Status", selector: (row) => (row.status == 1 ? "Active" : "Inactive"), sortable: true },
-    // { name: "Created", selector: (row) => row.createdAt, sortable: true },
-    {
-      name: "Action",
-      cell: (row) => (
-        <div className="d-flex">
-          <a href={`/students/view/${row.id}`}>
-            <button className="btn btn-voilate m-1" title="View">
-              <i className="bi bi-eye"></i>
-            </button>
-          </a>
-          <a href={`/students/edit/${row.id}`}>
-            <button className="btn btn-primary m-1" title="Edit">
-              <i className="bi bi-pencil-square"></i>
-            </button>
-          </a>
-          <button
-            onClick={() => handleDeleteStudent(row.id)}
-            className="btn btn-danger m-1"
-            title="Delete"
-            disabled={loading}
-          >
-            {loading ? "..." : <i className="bi bi-trash2"></i>}
-          </button>
-        </div>
-      ),
-    },
-  ];
 
-
-  // Delete employee function
-
-  const handleDeleteStudent = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this employee?")) return;
-    setLoading(true);
+  // dashboard count code start 
+  const fetchCount = async () => {
     try {
-      const { data } = await axios.delete(`${BACKEND_BASE_URL}/api/student/delete/${id}`);
-      if (data?.success) {
-        toast.success(data.message);
-        const studentData = records.filter(std => std.id !== id);
-        // setEmployeeData(updatedEmployees);
-        setRecords(studentData);
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error("Failed to delete student");
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  //  get all the student list 
-
-  const fetchAllStudent = async () => {
-    try {
-      const { data } = await axios.get(`${BACKEND_BASE_URL}/api/student/get-all`,
+      // get students
+      const studentRes = await axios.get(
+        `${BACKEND_BASE_URL}/api/student/get-all`,
         { headers: { Authorization: `Bearer ${token}` } }
-      ); 
-      if (data?.success) {
-        setRecords(data?.students);
+      );
 
-        const formattedData = data.students.map((students, index) => ({
-          id: students._id,
-          name: students.name,
-          email: students.email,
-          mobile: students.mobile,
-          status: students.status
-        }));
-        // setstudentsData(formattedData);
-        setRecords(formattedData);  // Initialize records with fetched data 
+      if (studentRes.data?.success) {
+        setStudentCount(studentRes.data.students.length);
       }
-    }
-    catch (error) {
-      toast.error(error?.response?.data?.message || "Error fetching questions");
+
+      // get questions
+      const questionRes = await axios.get(
+        `${BACKEND_BASE_URL}/api/question/get-all`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (questionRes.data?.success) {
+        setQuestionCount(questionRes.data.question.length);
+      }
+
+      // get table of contents
+      const tableOfContentsRes = await axios.get(
+        `${BACKEND_BASE_URL}/api/table-of-contents/get-all`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (tableOfContentsRes.data?.success) {
+        settableOfContentsCount(tableOfContentsRes.data.tableofcontents.length);
+      }
+
+
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Error fetching count");
     }
   }
+  // dashboard count code end
+
 
   useEffect(() => {
-    fetchAllStudent();
+    fetchCount();
   }, [token]);
 
 
@@ -122,54 +77,49 @@ export const Dashboard = ({ getRole, roleAuth }) => {
     <div className="main">
       {token && roleAuth ? (
         <div>
-          <div className="searchbar2">
-            <input type="text" name="" id="" placeholder="Search" />
-            <div className="searchbtn">
-              <img
-                src="https://media.geeksforgeeks.org/wp-content/uploads/20221210180758/Untitled-design-(28).png"
-                className="icn srchicn"
-                alt="search-button"
-              />
-            </div>
-          </div>
-
           <div className="box-container">
-            <div className="box box1">
-              <div className="text">
-                <h2 className="topic-heading">60.5k</h2>
-                <h2 className="topic">Article Views</h2>
+            <Link to="/questions">
+              <div className="box box1">
+                <div className="text">
+                  <h2 className="topic-heading">{questionCount}</h2>
+                  <h2 className="topic">Questions</h2>
+                </div>
+                <img
+                  src="https://media.geeksforgeeks.org/wp-content/uploads/20221210184645/Untitled-design-(31).png"
+                  alt="Views"
+                />
               </div>
-              <img
-                src="https://media.geeksforgeeks.org/wp-content/uploads/20221210184645/Untitled-design-(31).png"
-                alt="Views"
-              />
-            </div>
+            </Link>
 
-            <div className="box box2">
-              <div className="text">
-                <h2 className="topic-heading">150</h2>
-                <h2 className="topic">Likes</h2>
+            <Link to='/students'>
+              <div className="box box2">
+                <div className="text">
+                  <h2 className="topic-heading">{studentCount}</h2>
+                  <h2 className="topic">Students</h2>
+                </div>
+                <img
+                  src="https://media.geeksforgeeks.org/wp-content/uploads/20221210185030/14.png"
+                  alt="likes"
+                />
               </div>
-              <img
-                src="https://media.geeksforgeeks.org/wp-content/uploads/20221210185030/14.png"
-                alt="likes"
-              />
-            </div>
+            </Link>
 
-            <div className="box box3">
-              <div className="text">
-                <h2 className="topic-heading">320</h2>
-                <h2 className="topic">Comments</h2>
+            <Link to="/table-of-contents">
+              <div className="box box3">
+                <div className="text">
+                  <h2 className="topic-heading">{tableOfContentsCount}</h2>
+                  <h2 className="topic">Table Of Contents</h2>
+                </div>
+                <img
+                  src="https://media.geeksforgeeks.org/wp-content/uploads/20221210184645/Untitled-design-(32).png"
+                  alt="comments"
+                />
               </div>
-              <img
-                src="https://media.geeksforgeeks.org/wp-content/uploads/20221210184645/Untitled-design-(32).png"
-                alt="comments"
-              />
-            </div>
+            </Link>
 
             <div className="box box4">
               <div className="text">
-                <h2 className="topic-heading">70</h2>
+                <h2 className="topic-heading">{publishedCount}</h2>
                 <h2 className="topic">Published</h2>
               </div>
               <img
@@ -179,22 +129,6 @@ export const Dashboard = ({ getRole, roleAuth }) => {
             </div>
           </div>
 
-          <div className="report-container">
-            <div className="report-header">
-              <h1 className="recent-Articles"><i className="bi bi-people"></i> Stutents</h1>
-              <button className="view">View All</button>
-            </div>
-
-            <div className="report-body">
-              <DataTable
-                columns={columns}
-                data={records}
-                selectableRows
-                fixedHeader
-                pagination
-              />
-            </div>
-          </div>
         </div>
       ) : (
         <Manage getRole={getRole} roleAuth={roleAuth} />

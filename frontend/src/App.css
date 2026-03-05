@@ -279,19 +279,19 @@ header {
 }
 
 .box:nth-child(1) {
-    background-color: var(--one-use-color);
+    background-color:#3f0097; /* var(--one-use-color); */
 }
 
 .box:nth-child(2) {
-    background-color: var(--two-use-color);
+    background-color: #3f0097; /* var(--two-use-color);*/
 }
 
 .box:nth-child(3) {
-    background-color: var(--one-use-color);
+    background-color: #3f0097; /*  var(--one-use-color);*/
 }
 
 .box:nth-child(4) {
-    background-color: var(--two-use-color);
+    background-color: #3f0097; /*  var(--two-use-color);*/
 }
 
 .box img {

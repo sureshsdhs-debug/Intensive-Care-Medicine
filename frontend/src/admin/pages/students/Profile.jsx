@@ -73,59 +73,105 @@ const Profile = () => {
           {/*</a>*/}
         </div>
 
-        <div className="report-body">
-          <div className="row">
-            {/* Task Information */}
-            <div className="col-md-6">
-              <div className="table-responsive">
-                <table className="table table-bordered table-striped">
-                  <tbody>
-                    <tr>
-                      <th><i className="bi bi-person-check-fill text-info"></i> Name</th>
-                      <td>{inputs.name}</td>
-                    </tr>
-                    <tr>
-                      <th><i className="bi bi-router text-info"></i> Email</th>
-                      <td>{inputs.email}</td>
-                    </tr>
-                    {inputs.role ? (
-                      <tr>
-                        <th><i className="bi bi-router text-info"></i> Role</th>
-                        <td className={inputs.role === 1 ? "text-success" : "text-danger"}>{inputs.role === 1 ? "Admin" : "Sub Admin"}</td>
-                      </tr>
+     <div className="report-body">
+  <div className="container-fluid">
+    <div className="row">
 
-                    ) : (
-                      <tr>
-                        <th><i className="bi bi-router text-info"></i> Gender</th>
-                        <td>{inputs.gender}</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
+      {/* Profile Card */}
+      <div className="col-md-4">
+        <div className="card shadow-sm border-0 text-center">
+          <div className="card-body">
+
+            {/* Avatar */}
+            <div
+              style={{
+                width: "100px",
+                height: "100px",
+                borderRadius: "50%",
+                background: "#6c63ff",
+                color: "#fff",
+                fontSize: "36px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "auto"
+              }}
+            >
+              {inputs.name?.charAt(0)}
             </div>
 
-            {/* Additional Task Information */}
-            <div className="col-md-6">
-              <div className="table-responsive">
-                <table className="table table-bordered table-striped">
-                  <tbody>
-                    {inputs.mobile ? (
-                      <tr>
-                        <th><i className="bi bi-phone text-info"></i> Mobile</th>
-                        <td>{inputs.mobile}</td>
-                      </tr>
-                    ) : ('')}
-                    <tr>
-                      <th><i className="bi bi-chat-dots text-info"></i> Status</th>
-                      <td className={inputs.status === 1 ? "text-success" : "text-danger"}>{inputs.status === 1 ? "Active" : "Inactive"}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <h4 className="mt-3">{inputs.name}</h4>
+            <p className="text-muted">{inputs.email}</p>
+
+            <span className={inputs.status === 1 ? "badge bg-success" : "badge bg-danger"}>
+              {inputs.status === 1 ? "Active" : "Inactive"}
+            </span>
+
           </div>
         </div>
+      </div>
+
+      {/* Profile Details */}
+      <div className="col-md-8">
+        <div className="card shadow-sm border-0">
+          <div className="card-header bg-white">
+            <h5 className="mb-0">
+              <i className="bi bi-person-lines-fill me-2"></i>
+              Profile Information
+            </h5>
+          </div>
+
+          <div className="card-body">
+
+            <div className="row mb-3">
+              <div className="col-md-4 fw-bold">Name</div>
+              <div className="col-md-8">{inputs.name}</div>
+            </div>
+
+            <div className="row mb-3">
+              <div className="col-md-4 fw-bold">Email</div>
+              <div className="col-md-8">{inputs.email}</div>
+            </div>
+
+            {inputs.role ? (
+              <div className="row mb-3">
+                <div className="col-md-4 fw-bold">Role</div>
+                <div className="col-md-8">
+                  <span className={inputs.role === 1 ? "badge bg-primary" : "badge bg-secondary"}>
+                    {inputs.role === 1 ? "Admin" : "Sub Admin"}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="row mb-3">
+                <div className="col-md-4 fw-bold">Gender</div>
+                <div className="col-md-8">{inputs.gender}</div>
+              </div>
+            )}
+
+            {inputs.mobile && (
+              <div className="row mb-3">
+                <div className="col-md-4 fw-bold">Mobile</div>
+                <div className="col-md-8">{inputs.mobile}</div>
+              </div>
+            )}
+
+            <div className="row">
+              <div className="col-md-4 fw-bold">Status</div>
+              <div className="col-md-8">
+                <span className={inputs.status === 1 ? "badge bg-success" : "badge bg-danger"}>
+                  {inputs.status === 1 ? "Active" : "Inactive"}
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
       </div>
     </div>
   );

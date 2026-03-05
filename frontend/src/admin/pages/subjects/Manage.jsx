@@ -8,6 +8,7 @@ const Manage = () => {
   const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [search,setSearch] = useState("");
   // Table columns
   const columns = [
     // { name: "ID", selector: (row) => row.id, sortable: true },
@@ -39,6 +40,18 @@ const Manage = () => {
       ),
     },
   ];
+
+    // Search Data 
+const filteredRecords = records.filter((item) => {
+  const searchText = search.toLowerCase();
+
+  return (
+    item.subjectname?.toLowerCase().includes(searchText) ||
+    item.ordering?.toString().includes(searchText) ||
+    (item.status === 1 ? "Active" : "Inactive").includes(searchText)
+  );
+});
+
 
   
   // Delete employee function
@@ -114,9 +127,20 @@ const handleDeleteSubject = async (id) => {
 
           {/* <div className="items"> */}
 
+           <div className="mb-3 d-flex justify-content-end">
+            <input
+              type="text"
+              placeholder="Search Subject..."
+              className="form-control"
+              style={{ width: "300px" }}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div> 
+
               <DataTable
               columns={columns}
-              data={records}
+              data={filteredRecords}
               selectableRows
               fixedHeader
               pagination

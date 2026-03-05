@@ -10,6 +10,7 @@ const Manage = () => {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const { token } = useAuth();
+  const [search, setSearch] = useState("");
   // Table columns
   const columns = [
     // { name: "ID", selector: (row) => row.id, sortable: true },
@@ -52,6 +53,18 @@ const Manage = () => {
       ),
     },
   ];
+
+  // Search Data 
+const filteredRecords = records.filter((item) => {
+  const searchText = search.toLowerCase();
+
+  return (
+    item.name?.toLowerCase().includes(searchText) ||
+    item.email?.toLowerCase().includes(searchText) ||
+    item.mobile?.toString().includes(searchText) ||
+    (item.status === 1 ? "active" : "inactive").includes(searchText)
+  );
+});
 
 
   // Delete employee function
@@ -118,9 +131,20 @@ const Manage = () => {
         </div>
 
         <div className="report-body"> 
+           <div className="mb-3 d-flex justify-content-end">
+            <input
+              type="text"
+              placeholder="Search Student..."
+              className="form-control"
+              style={{ width: "300px" }}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          
           <DataTable
             columns={columns}
-            data={records}
+            data={filteredRecords}
             selectableRows
             fixedHeader
             pagination
