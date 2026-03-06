@@ -11,7 +11,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 const FRONTEND_URL = process.env.FRONTEND_BASE_URL || "http://localhost:5173";
-const FRONTEND_URL_WWW = process.env.FRONTEND_BASE_URL_WWW || "http://localhost:5173";
+const FRONTEND_URL_WWW = process.env.FRONTEND_BASE_URL_WWW || "http://www.localhost:5173";
 
 
 // Middleware
@@ -22,12 +22,26 @@ const allowedOrigins = [
 ];
 
 
+// app.use(
+//   cors({
+//     origin: allowedOrigins,
+//     credentials: true,
+//   })
+// );
+
 app.use(
   cors({
-    origin: allowedOrigins,
-    credentials: true,
+    origin: [
+      "https://www.icmbook.com",
+      "https://icmbook.com",
+      "http://localhost:5173"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
   })
 );
+
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
