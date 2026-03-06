@@ -16,10 +16,10 @@ const FRONTEND_URL_WWW = process.env.FRONTEND_BASE_URL_WWW || "http://www.localh
 
 // Middleware
 
-const allowedOrigins = [
-  FRONTEND_URL,
-  FRONTEND_URL_WWW, 
-];
+// const allowedOrigins = [
+//   FRONTEND_URL,
+//   FRONTEND_URL_WWW, 
+// ];
 
 
 // app.use(
@@ -32,8 +32,8 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: [
-      "https://www.icmbook.com",
-      "https://icmbook.com",
+      FRONTEND_URL_WWW,
+      FRONTEND_URL,
       "http://localhost:5173"
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
