@@ -28,7 +28,7 @@ const Register = () => {
     e.preventDefault();
 
     setLoading(true);
-    return false;
+    // return false;
     try {
       const { data } = await axios.post(
         `${BACKEND_BASE_URL}/api/student/add`,
