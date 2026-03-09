@@ -9,7 +9,7 @@ const storage = new CloudinaryStorage({
       return {
         folder: "questions/audio",
         resource_type: "video", // Cloudinary treats audio as video
-        allowed_formats: ["mp3", "wav", "ogg","m4a"],
+        allowed_formats: ["mp3", "wav", "ogg","m4a","mp4"],
       };
     }
 
