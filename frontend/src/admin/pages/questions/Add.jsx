@@ -152,8 +152,8 @@ const Add = () => {
       toast.error("Please select a valid audio file");
       return;
     }
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error("Audio must be under 10MB");
+    if (file.size > 15 * 1024 * 1024) {
+      toast.error("Audio must be under 15MB");
       return;
     }
 
