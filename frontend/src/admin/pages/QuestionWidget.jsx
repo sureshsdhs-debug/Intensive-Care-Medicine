@@ -501,7 +501,7 @@ SUBMIT ANSWER
                                       isCorrectOption &&
                                       showStats[id] &&
                                       isSubmitted &&
-                                      isCorrect === true &&
+                                      // isCorrect === true &&
                                       (q.answeraudio || q.answerreason) && (
                                         <div className="audio-box" style={{ marginTop: 12 }}>
                                           {q.answerreason && q.answerreason != "null" && (
@@ -534,7 +534,7 @@ SUBMIT ANSWER
                               {isMultiple &&
                                 showStats[id] &&
                                 isSubmitted &&
-                                isCorrect === true &&
+                                // isCorrect === true &&
                                 (q.answeraudio || q.answerreason) && (
                                   <div className="audio-box" style={{ marginTop: 16 }}>
                                     {q.answerreason && (
