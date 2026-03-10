@@ -252,30 +252,34 @@ body {
     align-items: center;
     padding: 60px;
     height: 90vh;
+    background: linear-gradient(to right, #FFF 50%, #ffe9eb 50%);
+        text-align: center;
+        justify-content: center;
 }
 
 .right-content-div h6 {
-    color: #0f7fee;
-    font-size: 20px;
+    color: #000;
+    font-size: 16px;
     font-weight: 600;
     margin-bottom: 20px;
 }
 
 .right-content-div h2 {
     color: #000;
-    font-size: 64px;
-    font-weight: 900;
+    font-size: 55px;
+    font-weight: 600;
     margin-bottom: 20px;
+        line-height: 53px;
 }
 
 .right-content-div h2 span {
-    color: #0f7fee;
+    color: #000;
 }
 
 .right-content-div h5 {
-    color: #0f7fee;
-    font-size: 18px;
-    font-weight: 600;
+    color: #000;
+    font-size: 30px;
+    font-weight: 800;
 }
 
 .front-page-div {
@@ -631,9 +635,9 @@ body {
     font-size: 35px;
 }
 
-.right-content-div h6 { 
+/* .right-content-div h6 { 
     font-size: 18px; 
-}
+} */
 
   /* .left-image-div img {
     height: auto !important;
@@ -657,3 +661,23 @@ body {
     height: 30vh!important;
   }
 }
+
+
+
+
+/* Kapil css start  */
+@media (min-width: 1369px) and (max-width: 2592px) {
+.right-content-div h2 {
+    font-size: 87px;
+    line-height: 97px;
+}
+.right-content-div h6 {
+    font-size: 29px;
+}
+.right-content-div h5 { 
+    font-size: 46px; 
+    margin-top: 33px;
+
+}
+}
+/* Kapil css end */
