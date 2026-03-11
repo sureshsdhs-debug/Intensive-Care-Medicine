@@ -147,6 +147,7 @@ const filteredRecords = records.filter((item) => {
               selectableRows
               fixedHeader
               pagination
+              paginationRowsPerPageOptions={[10, 20, 30, 50, 100,200,300,400,500]}
             />
 
           {/* </div> */}
