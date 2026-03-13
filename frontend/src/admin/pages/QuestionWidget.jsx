@@ -15,7 +15,7 @@ import api from "../../utils/api";
  * - On correct submit, results panel opens automatically
  */
 
-const QuestionWidget = ({ pageIndex, isManualNavigation, setIsManualNavigation }) => {
+const QuestionWidget = ({ isManualNavigation, setIsManualNavigation }) => {
   const hasAutoScrolled = useRef(false);
   const token = localStorage.getItem("token");
   const [questions, setQuestions] = useState([]);
@@ -205,16 +205,9 @@ const QuestionWidget = ({ pageIndex, isManualNavigation, setIsManualNavigation }
       }
     }
 
-  }, [questions, serverResults, pageIndex, isManualNavigation]);
+  }, [questions, serverResults, isManualNavigation]);
 
-
-
-  useEffect(() => {
-    if (pageIndex >= 9) {
-      setIsManualNavigation(false);
-    }
-  }, [pageIndex]);
-  
+ 
   /* ----------------------------------------
 SUBMIT ANSWER
 ---------------------------------------- */

@@ -5,7 +5,7 @@ import { useAuth } from '../../auth/AuthProvider';
 import { Link } from 'react-router-dom';
 import logo from "../../assets/icm-logo.png";
 import GlobalPageSearch from '../../context/GlobalPageSearch';
-const Header = ({ getRole, pageIndex, setPageIndex, setIsManualNavigation }) => {
+const Header = ({ getRole, setIsManualNavigation }) => {
   const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
   const { token, logoutAction, role } = useAuth();
 
@@ -46,10 +46,28 @@ const Header = ({ getRole, pageIndex, setPageIndex, setIsManualNavigation }) => 
   //   setPageIndex(index);
   // };
 
-  const goTo = (index) => {
-    setIsManualNavigation(true);   // ⭐ IMPORTANT
-    setPageIndex(index);
-  };
+  // const goTo = (index) => {
+  //   setIsManualNavigation(true);   // ⭐ IMPORTANT
+  //   setPageIndex(index);
+  // };
+
+  const goTo = (id) => {
+
+  setIsManualNavigation(true);
+
+  const section = document.getElementById(id);
+
+  if (section) {
+    section.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+
+};
+
+
+
 
   return (
     <header>
@@ -82,26 +100,26 @@ const Header = ({ getRole, pageIndex, setPageIndex, setIsManualNavigation }) => 
             </div>
 
             <div className="offcanvas-body p-0">
-              {[
-                "Copyright",
-                "Table of Contents",
-                "Acknowledgement",
-                "Dr. Sanjay",
-                "Dr. Aashish",
-                "Dr Prakash",
-                "About Author",
-                "Preface",
-              ].map((item, index) => (
-                <div
-                  key={index}
-                  onClick={() => goTo(index + 1)}
-                  className={`menu-item ${pageIndex === index + 1 ? "active-menu" : ""
-                    }`}
-                  data-bs-dismiss="offcanvas"
-                >
-                  {item}
-                </div>
-              ))}
+            {[
+              { name: "Front Page", id: "frontpage" },
+              { name: "Copyright", id: "copyright" },
+              { name: "Table of Contents", id: "toc" },
+              { name: "Acknowledgement", id: "acknowledgement" },
+              { name: "Dr. Sanjay", id: "dr-sanjay" },
+              { name: "Dr. Aashish", id: "dr-aashish" },
+              { name: "Dr Prakash", id: "dr-prakash" },
+              { name: "About Author", id: "about-author" },
+              { name: "Preface", id: "preface" },
+            ].map((item, index) => (
+              <div
+                key={index}
+                onClick={() => goTo(item.id)}
+                className="menu-item"
+                data-bs-dismiss="offcanvas"
+              >
+                {item.name}
+              </div>
+            ))}
 
               <p onClick={handleLogout} className="menu-item logout-btn">
                 <i className="bi bi-box-arrow-right"></i> Logout
