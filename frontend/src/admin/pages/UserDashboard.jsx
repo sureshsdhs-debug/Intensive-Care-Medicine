@@ -161,9 +161,11 @@ export const UserDashboard = ({ getRole, roleAuth, pageIndex, setPageIndex, isMa
                   <div className="col-lg-6 col-md-6 col-12 p-0">
                     <div className="right-content-div">
                       <div className="right-cont-inner">
-                         <h2> INTENSIVE <br /> CARE <br /> MEDICINE </h2>
-                        <h6>Self learning | All Examinations</h6>
-                        <h5>Tapesh Bansal</h5>
+                        <h6>• Self learning • All Examinations</h6>
+                        <h2>
+                          INTENSIVE CARE <span>MEDICINE</span>
+                        </h2>
+                        <h5>Author:- Dr Prakash Jha</h5>
                       </div>
                     </div>
                   </div>

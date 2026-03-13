@@ -681,3 +681,23 @@ body {
 }
 }
 /* Kapil css end */
+
+
+
+
+/* Kapil css start  */
+@media (min-width: 1369px) and (max-width: 2592px) {
+.right-content-div h2 {
+    font-size: 87px;
+    line-height: 97px;
+}
+.right-content-div h6 {
+    font-size: 29px;
+}
+.right-content-div h5 { 
+    font-size: 46px; 
+    margin-top: 33px;
+
+}
+}
+/* Kapil css end */
