@@ -429,9 +429,9 @@ export const UserDashboard = ({
 
             <section className="page front-page-div" id="about-author">
               <div className="container-fluid p-0">
-                <div className="front-page-shape">
+                {/* <div className="front-page-shape">
                   <img src={shapeImage} alt="Shapes" />
-                </div>
+                </div> */}
                 <div className="row">
                   <div className="col-lg-6 col-md-6 col-12 p-0">
                     <div className="left-image-div">
@@ -439,7 +439,7 @@ export const UserDashboard = ({
                     </div>
                   </div>
                   <div className="col-lg-6 col-md-6 col-12 p-0">
-                    <div className="right-content-div">
+                    <div className="right-content-div right-content-div-about">
                       <div className="right-cont-inner about-cont">
                         <h2>
                           About <span>Author</span>

@@ -6,6 +6,9 @@
     flex-direction: column;
   }
 
+  .question-page-title { 
+  font-size: 23px!important;
+  }
   /* Image section */
   .left-image-div {
     padding: 12px !important;
@@ -89,10 +92,12 @@ display:flex; gap: 12px; align-items: center;
 
 /* Question page sheet css start  */
    
+.question-page-sheet { 
+  background: #f8f9fc;
+}
 .question-page-sheet-container {
   min-height: 100vh;
-  padding: 40px 20px;
-  background: #f8f9fc;
+  padding: 40px 20px; 
 }
 
 /* Title */

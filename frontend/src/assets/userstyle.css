@@ -256,6 +256,9 @@ body {
         text-align: center;
         justify-content: center;
 }
+.right-content-div-about{
+     background: none !important;
+}
 
 .right-content-div h6 {
     color: #000;
