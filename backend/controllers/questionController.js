@@ -148,7 +148,7 @@ exports.allQuestion = async (req, res) => {
     let question;
     if (userRole != 1) {
       // question = await questionModel.find({ status: 1 }).sort({ ordering: 1});
-      question = await questionModel.find({ status: 1 }).sort({ questiontype: -1});
+      question = await questionModel.find({ status: 1 }).sort({ questiontype: -1,ordering: 1});
     } else {
       question = await questionModel.find({}).sort({ ordering: -1 });
     }

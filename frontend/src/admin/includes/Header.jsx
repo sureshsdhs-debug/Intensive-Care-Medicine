@@ -110,6 +110,7 @@ const Header = ({ getRole, setIsManualNavigation }) => {
               { name: "Dr Prakash", id: "dr-prakash" },
               { name: "About Author", id: "about-author" },
               { name: "Preface", id: "preface" },
+              { name: "Answer Sheet", id: "answersheet" },
             ].map((item, index) => (
               <div
                 key={index}

@@ -45,10 +45,10 @@ const QuestionPageSheetWidget = ({ isManualNavigation, setIsManualNavigation }) 
 
 
   return (
-    <section className="question-page-sheet">
+    <section className="question-page-sheet" id="answersheet">
   <div className="container question-page-sheet-container">
 
-    <div className="question-page-title">Question Page Sheet</div>
+    <div className="question-page-title">Answer Sheet</div>
 
     {questions.length === 0 ? (
       <p className="text-center">No questions available</p>
@@ -60,7 +60,7 @@ const QuestionPageSheetWidget = ({ isManualNavigation, setIsManualNavigation }) 
             
             {/* Question Number Badge */}
             <div className="question-page-sheet-number">
-              {String(index + 1).padStart(2, "0")}
+              {String(q.ordering).padStart(2, "0")}
             </div>
 
             <div className="flex-grow-1">
