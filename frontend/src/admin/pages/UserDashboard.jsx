@@ -146,13 +146,14 @@ export const UserDashboard = ({
                         <h5>Tapesh Bansal</h5>
                       </div>
                     </div>
+                        <p className="enjoy-reading"><b>😍</b> Enjoy the reading</p>
                   </div>
                 </div>
               </div>
             </section>
 
 
-            <section className="page" id="copyright">
+            <section className="page pt-4" id="copyright">
               <div className="second-page-div">
                 <div className="second-page-inn">
                   <h3>Copyright</h3>

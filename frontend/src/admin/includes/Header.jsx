@@ -71,12 +71,12 @@ const Header = ({ getRole, setIsManualNavigation }) => {
 
   return (
     <header>
-      <div className="logosec">
+      {/* <div className="logosec">
         <Link to="/dashboard" onClick={() => goTo(0)}>
           <div className="logo">
             <img className='logo-class' src={logo} alt="Logo" /> </div>
         </Link>
-      </div>
+      </div> */}
 
       {role != 1 && (
 

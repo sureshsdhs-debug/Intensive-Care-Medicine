@@ -15,7 +15,7 @@ import api from "../../utils/api";
  * - On correct submit, results panel opens automatically
  */
 
-const QuestionWidget = ({ pageIndex, isManualNavigation, setIsManualNavigation }) => {
+const QuestionWidget = ({ isManualNavigation, setIsManualNavigation }) => {
   const hasAutoScrolled = useRef(false);
   const token = localStorage.getItem("token");
   const [questions, setQuestions] = useState([]);
@@ -205,16 +205,9 @@ const QuestionWidget = ({ pageIndex, isManualNavigation, setIsManualNavigation }
       }
     }
 
-  }, [questions, serverResults, pageIndex, isManualNavigation]);
+  }, [questions, serverResults, isManualNavigation]);
 
-
-
-  useEffect(() => {
-    if (pageIndex >= 9) {
-      setIsManualNavigation(false);
-    }
-  }, [pageIndex]);
-  
+ 
   /* ----------------------------------------
 SUBMIT ANSWER
 ---------------------------------------- */
@@ -373,7 +366,7 @@ SUBMIT ANSWER
   const buildStats = (q) => {
     if (q.stats && typeof q.stats === "object") {
       const stats = [];
-      ["option1", "option2", "option3", "option4", "option5"].forEach(k => {
+      ["option1", "option2", "option3", "option4", "option5", "option6", "option7", "option8", "option9"].forEach(k => {
         if (q[k]) stats.push({ key: k, text: q[k], percent: Number(q.stats[k]) || 0 });
       });
       const total = stats.reduce((s, it) => s + it.percent, 0);
@@ -387,7 +380,7 @@ SUBMIT ANSWER
       return stats;
     }
 
-    const keys = ["option1", "option2", "option3", "option4", "option5"].filter(k => q[k]);
+    const keys = ["option1", "option2", "option3", "option4", "option5", "option6", "option7", "option8", "option9"].filter(k => q[k]);
     if (!keys.length) return [];
     // sample distribution for 4 options (like your screenshots)
     if (keys.length === 4) {
@@ -400,14 +393,14 @@ SUBMIT ANSWER
 
   // inline styles (you can move these to your css file)
   const styles = {
-    containerRight: { padding: 24 },
-    questionText: { fontSize: 20, marginBottom: 18, lineHeight: 1.5, fontWeight: 500 },
-    optionRow: { display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 6, marginBottom: 10, cursor: "pointer", minHeight: 48 },
+    containerRight: { padding: "0px 24px" },
+    questionText: { fontSize: 20, marginBottom: 0, lineHeight: 1.5, fontWeight: 500 },
+    optionRow: { display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", borderRadius: 6, cursor: "pointer"},
     radio: { width: 18, height: 18 },
-    submitRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 18, borderTop: "1px solid #e8e8e8", paddingTop: 16 },
+    submitRow: { display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #e8e8e8", borderBottom: "1px solid #e8e8e8", padding: 5 },
     item: { marginBottom: 18 },
-    circle: { width: 26, height: 26, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", marginRight: 12, border: "2px solid #2b5db5", color: "#2b5db5" },
-    circleActive: { width: 26, height: 26, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", marginRight: 12, background: "#22c55e", color: "#fff" },
+    circle: { width: 20, height: 20, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", marginRight: 12, border: "2px solid #2b5db5", color: "#2b5db5" },
+    circleActive: { width: 20, height: 20, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", marginRight: 12, background: "#22c55e", color: "#fff" },
     progressWrap: { height: 6, borderRadius: 6, marginTop: 8, overflow: "hidden", background: "#fff" },
     percentText: { fontWeight: 600, color: "#000" },
     backToQuestionLink: { color: "#1f6fb2", cursor: "pointer", display: "inline-block", fontWeight: 500 },
@@ -421,7 +414,7 @@ SUBMIT ANSWER
 
         const isMultiple = q.questiontype === "Multiple Question";
         const id = q._id ?? q.id ?? `q-${index}`;
-        const options = ["option1", "option2", "option3", "option4", "option5"].filter(k => q[k]).map(k => ({ key: k, text: q[k] }));
+        const options = ["option1", "option2", "option3", "option4", "option5", "option6", "option7", "option8", "option9"].filter(k => q[k]).map(k => ({ key: k, text: q[k] }));
         
         const imageSrc = q?.image && typeof q.image === "string"
           ? (q.image.startsWith("http") ? q.image : `${q.image}`)
@@ -442,14 +435,19 @@ SUBMIT ANSWER
 
         return (
           // <section id={`q-${id}`} className="page front-page-div question-answer" key={id} style={{ marginBottom: 31 }}>
-          <section id={`q-${id}`} className="question-answer" key={id} style={{ marginBottom: 31 }}>
+          <section id={`q-${id}`} className="question-answer mt-3" key={id}>
             <div className="container-fluid p-0">
+              <div className="row">
+                {q.questionremark !="" && (
+                <p>{q.questionremark}</p>
+                )}
+                </div>
               <div className="row">
                 {/* left image */}
                 {imageSrc != null && (
                   <div className="col-lg-6 col-md-6 col-12 p-0">
                     <div className="left-image-div" style={{ padding: 24 }}>
-                      <img src={imageSrc} alt="Question Image" style={{ width: "100%", height: "auto", borderRadius: 8, objectFit: "cover", }} />
+                      <img src={imageSrc} alt="Question Image" style={{ width: "100%", height: "60vh", borderRadius: 8, objectFit: "cover", }} />
                     </div>
                   </div>
                 )}
@@ -457,7 +455,7 @@ SUBMIT ANSWER
                 <div className={`${(imageSrc != null) ? "col-lg-6 col-md-6 col-12" : "col-lg-12 col-md-12 col-12"} p-0`}>
                   <div style={styles.containerRight}>
                     {/* question text always on top */}
-                    <h4 style={styles.questionText}>{q.questiontext}</h4>
+                    <h4 style={styles.questionText}>Q:{q.ordering} - {q.questiontext}</h4>
 
                     {/* stats view */}
                     {showStats[id] ? (
@@ -471,7 +469,7 @@ SUBMIT ANSWER
                                 const isCorrectOption = isMultiple ? q.correctoption.includes(s.key) : s.key === correctOptionKey[0];
                            
                                 return (
-                                  <div key={s.key} className="item" style={styles.item}>
+                                  <div key={s.key} className="item">
                                     <div style={{ display: "flex", alignItems: "center" }}>
                                       <div style={isCorrectOption ? styles.circle : styles.circle}>{isCorrectOption ? "" : ""}</div>
                                       <div style={{ flex: 1 }}>
@@ -496,14 +494,14 @@ SUBMIT ANSWER
                                       isCorrectOption &&
                                       showStats[id] &&
                                       isSubmitted &&
-                                      isCorrect === true &&
+                                      // isCorrect === true &&
                                       (q.answeraudio || q.answerreason) && (
                                         <div className="audio-box" style={{ marginTop: 12 }}>
-                                          {q.answerreason && q.answerreason != "null" && (
+                                          {/* {q.answerreason && q.answerreason != "null" && (
                                             <p className="reason-text">
                                               <i className="bi bi-dot"></i> {q.answerreason}
                                             </p>
-                                          )}
+                                          )} */}
                                           {q.answeraudio && (
                                             <audio controls style={{ width: "100%" }}>
                                               <source
@@ -529,14 +527,14 @@ SUBMIT ANSWER
                               {isMultiple &&
                                 showStats[id] &&
                                 isSubmitted &&
-                                isCorrect === true &&
+                                // isCorrect === true &&
                                 (q.answeraudio || q.answerreason) && (
                                   <div className="audio-box" style={{ marginTop: 16 }}>
-                                    {q.answerreason && (
+                                    {/* {q.answerreason && (
                                       <p className="reason-text">
                                         <i className="bi bi-dot"></i> {q.answerreason}
                                       </p>
-                                    )}
+                                    )} */}
                                     {q.answeraudio && (
                                       <audio controls style={{ width: "100%" }}>
                                         <source
@@ -621,9 +619,9 @@ SUBMIT ANSWER
                           {/* {!isSubmitted && ( */}
 
                           <div className="question-back-button">
-                            {serverResults.length > 0 && index > 0 && (
+                            {/* {serverResults.length > 0 && index > 0 && (
                               <button onClick={() => prevChallenge(index)}> <i className="bi bi-arrow-left"></i> Back</button>
-                            )}
+                            )} */}
                             <a href="#"
                               onClick={(e) => { e.preventDefault(); setShowStats(prev => ({ ...prev, [id]: true })); }}
                               style={{ color: "#1f6fb2" }}>
@@ -657,8 +655,8 @@ SUBMIT ANSWER
                         {isSubmitted || (isCorrect === false || isCorrect === true) ? (
                           <div style={{ marginTop: 12 }}>
                             <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
-                              <button style={{ padding: "7px 15px", borderRadius: 6, border: "1px solid #ccc", background: "#0f7fee", fontWeight: 500 }} onClick={() => nextChallenge(index)}>NEXT CHALLENGE <i className="bi bi-arrow-right"></i></button>
-                              <button style={{ padding: "7px 15px", borderRadius: 6, border: "none", background: "#0f7fee", color: "#fff", fontWeight: 500 }} onClick={() => tryAgain(id)}><i className="bi bi-arrow-clockwise"></i> TRY AGAIN</button>
+                              <button style={{ padding: "7px 15px", borderRadius: 6, border: "1px solid #ccc", background: "#0f7fee", fontWeight: 500 }} onClick={() => nextChallenge(index)} className="prebutton">NEXT <i className="bi bi-arrow-right"></i></button>
+                              <button style={{ padding: "7px 15px", borderRadius: 6, border: "none", background: "#0f7fee", color: "#fff", fontWeight: 500 }} onClick={() => tryAgain(id)} className="prebutton"><i className="bi bi-arrow-clockwise"></i> TRY AGAIN</button>
                             </div>
                           </div>
                         ) : (

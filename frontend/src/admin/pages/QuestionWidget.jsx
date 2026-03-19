@@ -497,11 +497,11 @@ SUBMIT ANSWER
                                       // isCorrect === true &&
                                       (q.answeraudio || q.answerreason) && (
                                         <div className="audio-box" style={{ marginTop: 12 }}>
-                                          {q.answerreason && q.answerreason != "null" && (
+                                          {/* {q.answerreason && q.answerreason != "null" && (
                                             <p className="reason-text">
                                               <i className="bi bi-dot"></i> {q.answerreason}
                                             </p>
-                                          )}
+                                          )} */}
                                           {q.answeraudio && (
                                             <audio controls style={{ width: "100%" }}>
                                               <source
@@ -530,11 +530,11 @@ SUBMIT ANSWER
                                 // isCorrect === true &&
                                 (q.answeraudio || q.answerreason) && (
                                   <div className="audio-box" style={{ marginTop: 16 }}>
-                                    {q.answerreason && (
+                                    {/* {q.answerreason && (
                                       <p className="reason-text">
                                         <i className="bi bi-dot"></i> {q.answerreason}
                                       </p>
-                                    )}
+                                    )} */}
                                     {q.answeraudio && (
                                       <audio controls style={{ width: "100%" }}>
                                         <source
