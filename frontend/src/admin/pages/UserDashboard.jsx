@@ -9,6 +9,7 @@ import shapeImage from "../../assets/shapes.png";
 import QuestionWidget from "./QuestionWidget";
 import "../../assets/userstyle.css";
 import useAntiScreenshot from "../../hooks/useAntiScreenshot";
+import QuestionPageSheetWidget from "./QuestionPageSheetWidget";
 
 export const UserDashboard = ({
   getRole,
@@ -532,6 +533,8 @@ export const UserDashboard = ({
 
             <QuestionWidget isManualNavigation={isManualNavigation}
               setIsManualNavigation={setIsManualNavigation} /> 
+
+              <QuestionPageSheetWidget/>
           </div>
         </div>
       )}

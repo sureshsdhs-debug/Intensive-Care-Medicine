@@ -147,30 +147,12 @@ exports.allQuestion = async (req, res) => {
 
     let question;
     if (userRole != 1) {
+      // question = await questionModel.find({ status: 1 }).sort({ ordering: 1});
       question = await questionModel.find({ status: 1 }).sort({ questiontype: -1});
     } else {
       question = await questionModel.find({}).sort({ ordering: -1 });
     }
-
-
-      // const matchStage = userRole != 1 ? { status: 1 } : {};
-
-        //  question = await questionModel.aggregate([
-        //   { $match: matchStage },
-        //   {
-        //     $addFields: {
-        //       sortOrder: {
-        //         $cond: [
-        //           { $eq: ["$questiontype", "Single Question"] },
-        //           1,
-        //           2
-        //         ]
-        //       }
-        //     }
-        //   },
-        //   { $sort: { sortOrder: 1 } }
-        // ]);
-
+ 
         
 
     return res.status(200).send({
