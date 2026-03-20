@@ -9,6 +9,10 @@
   .question-page-title { 
   font-size: 23px!important;
   }
+
+  .question-type-text { 
+  font-size: 23px!important;
+  }
   /* Image section */
   .left-image-div {
     padding: 12px !important;
@@ -158,4 +162,18 @@ display:flex; gap: 12px; align-items: center;
   font-weight: 600;
   color: #198754;
 }
+.question-type-text{
+      text-align: center;
+    font-size: 32px;
+    margin-bottom: 40px;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.one-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Question page sheet css end */

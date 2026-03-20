@@ -1,21 +1,12 @@
 // QuestionPageSheetWidget.jsx
-import React, { useEffect, useState, useCallback } from "react"; 
-import toast from "react-hot-toast"; 
-import { useUser } from "../../context/UserContext";
-import "../../assets/questionstyle.css"
+import React, { useEffect, useState, useCallback } from "react";
+import toast from "react-hot-toast";
+import "../../assets/questionstyle.css";
 import api from "../../utils/api";
-
-/**
- * QuestionPageSheetWidget
- * - Shows list of questions (left image + right question)
- * - "See how others chose" opens results panel
- * - Results panel includes a "Back to question" link (left aligned) which returns to interactive view
- * - On correct submit, results panel opens automatically
- */
 
 const QuestionPageSheetWidget = ({ isManualNavigation, setIsManualNavigation }) => {
   const token = localStorage.getItem("token");
-  const [questions, setQuestions] = useState([]); 
+  const [questions, setQuestions] = useState([]);
   const BACKEND_BASE_URL = import.meta.env.VITE_BACKEND_BASE_URL;
 
   const fetchAllQuestion = useCallback(async () => {
@@ -27,8 +18,7 @@ const QuestionPageSheetWidget = ({ isManualNavigation, setIsManualNavigation }) 
 
       if (data?.success) {
         setQuestions(data.question || []);
-      }
-      else {
+      } else {
         toast.error("Failed to fetch questions");
       }
     } catch (err) {
@@ -42,45 +32,76 @@ const QuestionPageSheetWidget = ({ isManualNavigation, setIsManualNavigation }) 
     }
   }, [fetchAllQuestion, token]);
 
+  // ✅ Separate questions
+  const singleQuestions = questions.filter(
+    (q) => q.questiontype === "Single Question"
+  );
 
+  const multipleQuestions = questions.filter(
+    (q) => q.questiontype === "Multiple Question"
+  );
+
+  // ✅ Reusable Card Component
+  const renderCard = (q, index) => (
+    <div className="question-page-sheet-card shadow-sm mb-3" key={q._id || index}>
+      <div className="d-flex align-items-start">
+
+        {/* Question Number */}
+        <div className="question-page-sheet-number">
+          {String(q.ordering || index + 1).padStart(2, "0")}
+        </div>
+
+        <div className="flex-grow-1">
+          <div
+            className="question-page-sheet-text one-line"
+            title={q.questiontext}
+          >
+           {q.questiontext.slice(0, 50)}...
+          </div>
+
+          <div className="answer-page-sheet-text">
+            <span>Answer:</span> {q.answerreason || "Not Answered"}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
 
   return (
     <section className="question-page-sheet" id="answersheet">
-  <div className="container question-page-sheet-container">
+      <div className="container question-page-sheet-container">
 
-    <div className="question-page-title">Answer Sheet</div>
+        <div className="question-page-title">Answer Sheet</div>
 
-    {questions.length === 0 ? (
-      <p className="text-center">No questions available</p>
-    ) : (
-      questions.map((q, index) => (
-        <div className="question-page-sheet-card shadow-sm" key={q._id || index}>
-          
-          <div className="d-flex align-items-start">
-            
-            {/* Question Number Badge */}
-            <div className="question-page-sheet-number">
-              {String(q.ordering).padStart(2, "0")}
-            </div>
+        <div className="row">
 
-            <div className="flex-grow-1">
-              <div className="question-page-sheet-text">
-                {q.questiontext}
-              </div>
+          {/* ✅ Single Questions */}
+          <div className="col-md-6">
+            <h3 className="mb-3">Single Option Answer Sheet</h3>
 
-              <div className="answer-page-sheet-text">
-                <span>Answer:</span> {q.answerreason || "Not Answered"}
-              </div>
-            </div>
+            {singleQuestions.length > 0 ? (
+              singleQuestions.map((q, index) => renderCard(q, index))
+            ) : (
+              <p>No Single Questions</p>
+            )}
+          </div>
 
+          {/* ✅ Multiple Questions */}
+          <div className="col-md-6">
+            <h3 className="mb-3">Multiple Option Answer Sheet</h3>
+
+            {multipleQuestions.length > 0 ? (
+              multipleQuestions.map((q, index) => renderCard(q, index))
+            ) : (
+              <p>No Multiple Questions</p>
+            )}
           </div>
 
         </div>
-      ))
-    )}
 
-  </div>
-</section>
+      </div>
+    </section>
   );
 };
 
