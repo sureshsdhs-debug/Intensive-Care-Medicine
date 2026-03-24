@@ -464,7 +464,7 @@ SUBMIT ANSWER
                 {imageSrc != null && (
                   <div className="col-lg-4 col-md-4 col-12 p-0">
                     <div className="left-image-div" style={{ padding: 24 }}>
-                      <img src={imageSrc} alt="Question Image" style={{ width: "100%", height: "50vh", borderRadius: 8, objectFit: "cover", }} />
+                      <img src={imageSrc} alt="Question Image" style={{ width: "100%", height: "50vh", borderRadius: 8, objectFit: "contain", }} />
                     </div>
                   </div>
                 )}
