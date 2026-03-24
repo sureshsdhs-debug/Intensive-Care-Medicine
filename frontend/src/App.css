@@ -857,21 +857,17 @@ header {
 .one-line{white-space: wrap!important;}
 .question-page-sheet-text{font-size: 15px!important;}
 .question-answer-sheet-cls{font-size: 17px;}
-.enjoy-reading { margin-top: -50px;font-size: 25px;text-align: center;}
+.enjoy-reading { margin-top: -77px;font-size: 21px;text-align: center;}
+.enjoy-reading > b {font-size: 30px;}
+.right-content-div h6 {  margin-bottom: 11px;}
+.right-content-div h6 { margin-bottom: 11px;}
+.right-content-div h5 { padding-bottom: 11px;font-size: 23px !important;}
+.right-content-div { padding: 30px 42px 64px 42px !important;}
+
 }
 
 @media (min-width: 768px) and (max-width: 991px) {  
-.left-image-div img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  height: auto!important;
-}
-.right-content-div{height: 100%!important;}
-.second-page-div p {
-  font-size: 14px;
-  color: #000;
-}
+.left-image-div img{width:100%;object-fit:cover;height:auto!important}.right-content-div{height:100%!important}.second-page-div p{font-size:14px;color:#000}
 .question-answer h4{font-size: 15px!important;}
 .one-line{white-space: wrap!important;}
 .question-page-sheet-text{font-size: 15px!important;}
