@@ -838,8 +838,42 @@ header {
   .content-search-bar > input {
     width: 100%;
   }
+  html body .left-image-div img{height: auto!important;}
+ .question-type-text {
+    font-size: 19px !important;
+    margin-bottom: 31px !important;
+    text-align: left !important;
+  }
 
-
+  .question-back-button a{font-size: 15px;}
+ .question-answer button {
+    width: auto;
+    text-align: center;
+    padding: 7px 10px !important;
+    min-width: auto !important;
+    font-size: 15px;
+  }
+.question-answer{margin-top: 0!important; padding-top: 0!important;}
+.one-line{white-space: wrap!important;}
+.question-page-sheet-text{font-size: 15px!important;}
+.question-answer-sheet-cls{font-size: 17px;}
 }
 
-@media (min-width: 768px) and (max-width: 991px) { }
+@media (min-width: 768px) and (max-width: 991px) { 
+
+.left-image-div img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  height: auto!important;
+}
+.right-content-div{height: 100%!important;}
+.second-page-div p {
+  font-size: 14px;
+  color: #000;
+}
+.question-answer h4{font-size: 15px!important;}
+.one-line{white-space: wrap!important;}
+.question-page-sheet-text{font-size: 15px!important;}
+.question-answer-sheet-cls{font-size: 18px;}
+}

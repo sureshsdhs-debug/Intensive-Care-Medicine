@@ -433,12 +433,12 @@ export const UserDashboard = ({
                   <img src={shapeImage} alt="Shapes" />
                 </div> */}
                 <div className="row">
-                  <div className="col-lg-6 col-md-6 col-12 p-0">
+                  <div className="col-lg-6 col-md-12 col-12 p-0">
                     <div className="left-image-div">
                       <img src={bannerImg} alt="Banner" />
                     </div>
                   </div>
-                  <div className="col-lg-6 col-md-6 col-12 p-0">
+                  <div className="col-lg-6 col-md-12 col-12 p-0">
                     <div className="right-content-div right-content-div-about">
                       <div className="right-cont-inner about-cont">
                         <h2>

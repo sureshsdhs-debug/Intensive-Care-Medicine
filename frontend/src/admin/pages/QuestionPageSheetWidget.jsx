@@ -78,7 +78,7 @@ const QuestionPageSheetWidget = ({ isManualNavigation, setIsManualNavigation }) 
 
           {/* ✅ Single Questions */}
           <div className="col-md-6">
-            <h3 className="mb-3">Single Option Answer Sheet</h3>
+            <h3 className="mb-3 question-answer-sheet-cls">Single Option Answer Sheet</h3>
 
             {singleQuestions.length > 0 ? (
               singleQuestions.map((q, index) => renderCard(q, index))
@@ -89,7 +89,7 @@ const QuestionPageSheetWidget = ({ isManualNavigation, setIsManualNavigation }) 
 
           {/* ✅ Multiple Questions */}
           <div className="col-md-6">
-            <h3 className="mb-3">Multiple Option Answer Sheet</h3>
+            <h3 className="mb-3 question-answer-sheet-cls">Multiple Option Answer Sheet</h3>
 
             {multipleQuestions.length > 0 ? (
               multipleQuestions.map((q, index) => renderCard(q, index))
