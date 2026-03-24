@@ -593,10 +593,10 @@ body {
     margin-bottom: 20px;
   }
 
-  .page {
+  /* .page {
     height: 80vh;
     display: none;
-  }
+  } */
 
   .page.active {
     display: block;
