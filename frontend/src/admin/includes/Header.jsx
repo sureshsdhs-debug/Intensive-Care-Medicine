@@ -91,7 +91,7 @@ const Header = ({ getRole, setIsManualNavigation }) => {
             id="offcanvasRight"
           >
             <div className="offcanvas-header border-bottom">
-              <h5 className="fw-bold mb-0 text-color">📖 Page Menus</h5>
+              <h5 className="fw-bold mb-0 text-color">📖 Page Menu</h5>
               <button
                 type="button"
                 className="btn-close"

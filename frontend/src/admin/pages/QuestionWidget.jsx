@@ -587,11 +587,11 @@ SUBMIT ANSWER
                         </div>
 
                         {/* floating Next Challenge button */}
-                        {isSubmitted && (isCorrect === false || isCorrect === true) && (
+                        {/* {isSubmitted && (isCorrect === false || isCorrect === true) && (
                           <div style={{ minWidth: 160, display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}>
                             <button style={styles.nextButtonFloating} onClick={() => nextChallenge(index)}>NEXT CHALLENGE <i className="bi bi-arrow-right"></i></button>
                           </div>
-                        )}
+                        )} */}
                       </div>
                     ) : (
                       /* interactive question view */

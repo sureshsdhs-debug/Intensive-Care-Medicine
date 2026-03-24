@@ -446,9 +446,11 @@ header {
     cursor: pointer;
     padding: 7px;
     background-color: #0f7fee;
-    border: 1px solid #fff;
+    border: 2px solid #fff;
 }
-
+.content-search-bar>button>i{
+        font-weight: bold;
+} 
 /* search bar css end   */
 
 

@@ -40,7 +40,7 @@ const GlobalPageSearch = () => {
     if (!marks.length) return;
 
     marks.forEach((m) => (m.style.background = "yellow"));
-    marks[index].style.background = "orange";
+    marks[index].style.background = "yellow";
 
     marks[index].scrollIntoView({
       behavior: "smooth",
