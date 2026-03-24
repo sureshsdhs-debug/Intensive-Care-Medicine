@@ -857,7 +857,7 @@ header {
 .one-line{white-space: wrap!important;}
 .question-page-sheet-text{font-size: 15px!important;}
 .question-answer-sheet-cls{font-size: 17px;}
-.enjoy-reading { margin-top: -59px;font-size: 24px;}
+.enjoy-reading { margin-top: -50px;font-size: 25px;text-align: center;}
 }
 
 @media (min-width: 768px) and (max-width: 991px) {  
