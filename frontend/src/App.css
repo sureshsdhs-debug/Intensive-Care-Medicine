@@ -552,13 +552,13 @@ header {
     .content-search-bar {
         position: fixed;
         top: 7px;
-        right: 53px;
-        width: 220px;
+        right: 54px;
+        width: 253px;
             gap: 3px;
     }
 
     .content-search-bar>input {
-      width: 15vh;
+      width: 18vh;
     }
 
     /* search bar scc end */
