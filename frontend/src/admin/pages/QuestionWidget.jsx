@@ -439,14 +439,20 @@ SUBMIT ANSWER
             <div className="container-fluid p-0">
 
 
-
-              {index === 0 || questions[index - 1].questiontype !== q.questiontype ? (
-                <h1 className="question-type-text">
-                  {q.questiontype === "Multiple Question"
-                    ? "Questions with Multiple Correct Answers"
-                    : "Questions with Single Correct Option"}
-                </h1>
-              ) : null}
+                {index === 0 || questions[index - 1].questiontype !== q.questiontype ? (
+                  <h1
+                    className="question-type-text"
+                    id={
+                      q.questiontype === "Multiple Question"
+                        ? "multiple-question-id"
+                        : "single-question-id"
+                    }
+                  >
+                    {q.questiontype === "Multiple Question"
+                      ? "Questions with Multiple Correct Answers"
+                      : "Questions with Single Correct Option"}
+                  </h1>
+                ) : null}
 
               <div className="row">
                 {q.questionremark != "" && (

@@ -30,7 +30,7 @@ const useAntiScreenshot = ({
     document.addEventListener("contextmenu", disableDefault);
     document.addEventListener("copy", disableDefault);
     document.addEventListener("cut", disableDefault);
-    document.addEventListener("paste", disableDefault);
+    // document.addEventListener("paste", disableDefault);
 
     /* -----------------------------
        Detect Screenshot Keys

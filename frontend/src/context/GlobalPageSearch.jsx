@@ -92,8 +92,8 @@ const GlobalPageSearch = () => {
         {totalMatches ? `${currentIndex + 1}/${totalMatches}` : "0/0"}
       </span>
 
-      <button onClick={prevMatch}>↑</button>
-      <button onClick={nextMatch}>↓</button>
+      <button onClick={prevMatch} className="text-light"><i class="bi bi-arrow-up"></i></button>
+      <button onClick={nextMatch} className="text-light"><i class="bi bi-arrow-down"></i></button>
     </div>
   );
 };
