@@ -274,9 +274,8 @@ export const UserDashboard = ({
 
             <section className="page" id="dr-sanjay">
               <div className="second-page-div">
-                <div className="second-page-inn">
-                  <h3>Foreword</h3>
-                  <h3>Dr. Sanjay Sharma</h3>
+                <div className="second-page-inn"> 
+                  <h3>Foreword <br/>Dr. Sanjay Sharma</h3>
                   <p>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
                     do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -325,9 +324,8 @@ export const UserDashboard = ({
 
             <section className="page" id="dr-aashish">
               <div className="second-page-div">
-                <div className="second-page-inn">
-                  <h3>Foreword</h3>
-                  <h3>Dr. Aashish Kumar</h3>
+                <div className="second-page-inn"> 
+                  <h3>Foreword <br/> Dr. Aashish Kumar</h3>
                   <p>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
                     do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -376,9 +374,8 @@ export const UserDashboard = ({
 
             <section className="page"  id="dr-prakash">
               <div className="second-page-div">
-                <div className="second-page-inn">
-                  <h3>Foreword</h3>
-                  <h3>Dr Prakash Jha</h3>
+                <div className="second-page-inn"> 
+                  <h3>Foreword <br/> Dr Prakash Jha</h3>
                   <p>
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
                     do eiusmod tempor incididunt ut labore et dolore magna aliqua.

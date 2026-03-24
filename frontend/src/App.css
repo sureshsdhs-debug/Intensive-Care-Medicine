@@ -863,7 +863,11 @@ header {
 .right-content-div h6 { margin-bottom: 11px;}
 .right-content-div h5 { padding-bottom: 11px;font-size: 23px !important;}
 .right-content-div { padding: 30px 42px 64px 42px !important;}
-
+.second-page-div h3 {font-size: 25px!important;}
+.toc-row { 
+  font-size: 17px!important;;
+  margin: 0px 0!important;;
+}
 }
 
 @media (min-width: 768px) and (max-width: 991px) {  
