@@ -624,10 +624,9 @@ SUBMIT ANSWER
                           const optionLabel = String.fromCharCode(65 + i); // A, B, C, D...
                           return (
                             <div onClick={() => handleSelect(id, opt, isMultiple)} style={{ ...styles.optionRow, background, border }} key={optionId}>
-                              <small style={{ width: '10px' }}>{optionLabel}</small>
+                              <big style={{ width: '10px' }}>{optionLabel}</big>
                               <input id={optionId} type={isMultiple ? "checkbox" : "radio"} name={`radio-${id}`} checked={checked || false} readOnly />
-
-                              <label htmlFor={optionId} style={{ cursor: "pointer", color }}>{opt}</label>
+                              <label htmlFor={optionId} style={{color }}>{opt}</label>
                             </div>
                           );
                         })}
