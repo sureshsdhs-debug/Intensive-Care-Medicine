@@ -158,7 +158,7 @@ display:flex; gap: 12px; align-items: center;
 
 .answer-page-sheet-text span {
   font-weight: 600;
-  color: #198754;
+  color: red;
 }
 .question-type-text{
       text-align: center;
