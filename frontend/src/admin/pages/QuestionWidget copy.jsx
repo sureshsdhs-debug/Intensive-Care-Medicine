@@ -33,23 +33,23 @@ const QuestionWidget = ({ isManualNavigation, setIsManualNavigation }) => {
         `${BACKEND_BASE_URL}/api/question/get-all`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
-      if (data?.success){
+
+      if (data?.success) {
         setQuestions(data.question || []);
       }
-      else{
+      else {
         toast.error("Failed to fetch questions");
       }
     } catch (err) {
       toast.error(err?.response?.data?.message || "Error fetching questions");
     }
-  }, [BACKEND_BASE_URL,token]);
+  }, [BACKEND_BASE_URL, token]);
 
-    useEffect(() => {
-      if (token) {
-        fetchAllQuestion();
-      }
-    }, [fetchAllQuestion, token]);
+  useEffect(() => {
+    if (token) {
+      fetchAllQuestion();
+    }
+  }, [fetchAllQuestion, token]);
 
 
   const fetchThisUserResult = useCallback(async () => {
@@ -94,72 +94,72 @@ const QuestionWidget = ({ isManualNavigation, setIsManualNavigation }) => {
     return q[q.correctoption] ?? null;
   }, []);
 
- 
+
 
 
   useEffect(() => {
-  if (!serverResults.length || !questionMap.size) return;
+    if (!serverResults.length || !questionMap.size) return;
 
-  const newSelected = {};
-  const newSubmitted = new Set();
-  const newResults = {};
+    const newSelected = {};
+    const newSubmitted = new Set();
+    const newResults = {};
 
-  serverResults.forEach(r => {
-    const qId = String(r.questionid);
-    const qObj = questionMap.get(qId);
-    if (!qObj) return;
+    serverResults.forEach(r => {
+      const qId = String(r.questionid);
+      const qObj = questionMap.get(qId);
+      if (!qObj) return;
 
-    const isMultiple = qObj.questiontype === "Multiple Question";
-    const correctValue = resolveCorrectValue(qObj);
+      const isMultiple = qObj.questiontype === "Multiple Question";
+      const correctValue = resolveCorrectValue(qObj);
 
-    let selectedValue = null;
+      let selectedValue = null;
 
-    // ✅ MULTIPLE QUESTION FIX
-    if (isMultiple) {
-      if (Array.isArray(r.selectedoption)) {
-        selectedValue = r.selectedoption
-          .map(key => qObj[key])
-          .filter(Boolean);
-      } else if (typeof r.selectedoption === "string") {
-        selectedValue = [qObj[r.selectedoption]].filter(Boolean);
+      // ✅ MULTIPLE QUESTION FIX
+      if (isMultiple) {
+        if (Array.isArray(r.selectedoption)) {
+          selectedValue = r.selectedoption
+            .map(key => qObj[key])
+            .filter(Boolean);
+        } else if (typeof r.selectedoption === "string") {
+          selectedValue = [qObj[r.selectedoption]].filter(Boolean);
+        } else {
+          selectedValue = [];
+        }
       } else {
-        selectedValue = [];
+        selectedValue = qObj[r.selectedoption] ?? null;
       }
-    } else {
-      selectedValue = qObj[r.selectedoption] ?? null;
-    }
 
-    // correctness check
-    let isCorrect = null;
+      // correctness check
+      let isCorrect = null;
 
-    if (!isMultiple) {
-      isCorrect =
-        selectedValue && correctValue
-          ? String(selectedValue).trim() === String(correctValue).trim()
-          : null;
-    } else {
-      const correctKeys = Array.isArray(qObj.correctoption)
-        ? qObj.correctoption
-        : [qObj.correctoption];
+      if (!isMultiple) {
+        isCorrect =
+          selectedValue && correctValue
+            ? String(selectedValue).trim() === String(correctValue).trim()
+            : null;
+      } else {
+        const correctKeys = Array.isArray(qObj.correctoption)
+          ? qObj.correctoption
+          : [qObj.correctoption];
 
-      const selectedKeys = Array.isArray(r.selectedoption)
-        ? r.selectedoption
-        : [r.selectedoption];
+        const selectedKeys = Array.isArray(r.selectedoption)
+          ? r.selectedoption
+          : [r.selectedoption];
 
-      isCorrect =
-        correctKeys.length === selectedKeys.length &&
-        correctKeys.every(k => selectedKeys.includes(k));
-    }
+        isCorrect =
+          correctKeys.length === selectedKeys.length &&
+          correctKeys.every(k => selectedKeys.includes(k));
+      }
 
-    newSelected[qId] = selectedValue;
-    newSubmitted.add(qId);
-    newResults[qId] = { isCorrect, correctValue };
-  });
+      newSelected[qId] = selectedValue;
+      newSubmitted.add(qId);
+      newResults[qId] = { isCorrect, correctValue };
+    });
 
-  setSelected(newSelected);
-  setSubmitted(newSubmitted);
-  setResults(newResults);
-}, [serverResults, questionMap, resolveCorrectValue]);
+    setSelected(newSelected);
+    setSubmitted(newSubmitted);
+    setResults(newResults);
+  }, [serverResults, questionMap, resolveCorrectValue]);
 
 
 
@@ -207,7 +207,7 @@ const QuestionWidget = ({ isManualNavigation, setIsManualNavigation }) => {
 
   }, [questions, serverResults, isManualNavigation]);
 
- 
+
   /* ----------------------------------------
 SUBMIT ANSWER
 ---------------------------------------- */
@@ -395,7 +395,7 @@ SUBMIT ANSWER
   const styles = {
     containerRight: { padding: "0px 24px" },
     questionText: { fontSize: 20, marginBottom: 0, lineHeight: 1.5, fontWeight: 500 },
-    optionRow: { display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", borderRadius: 6, cursor: "pointer"},
+    optionRow: { display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", borderRadius: 6, cursor: "pointer" },
     radio: { width: 18, height: 18 },
     submitRow: { display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #e8e8e8", borderBottom: "1px solid #e8e8e8", padding: 5 },
     item: { marginBottom: 18 },
@@ -415,7 +415,7 @@ SUBMIT ANSWER
         const isMultiple = q.questiontype === "Multiple Question";
         const id = q._id ?? q.id ?? `q-${index}`;
         const options = ["option1", "option2", "option3", "option4", "option5", "option6", "option7", "option8", "option9"].filter(k => q[k]).map(k => ({ key: k, text: q[k] }));
-        
+
         const imageSrc = q?.image && typeof q.image === "string"
           ? (q.image.startsWith("http") ? q.image : `${q.image}`)
           : null;
@@ -437,22 +437,39 @@ SUBMIT ANSWER
           // <section id={`q-${id}`} className="page front-page-div question-answer" key={id} style={{ marginBottom: 31 }}>
           <section id={`q-${id}`} className="question-answer mt-3" key={id}>
             <div className="container-fluid p-0">
+
+
+                {index === 0 || questions[index - 1].questiontype !== q.questiontype ? (
+                  <h1
+                    className="question-type-text"
+                    id={
+                      q.questiontype === "Multiple Question"
+                        ? "multiple-question-id"
+                        : "single-question-id"
+                    }
+                  >
+                    {q.questiontype === "Multiple Question"
+                      ? "Questions with Multiple Correct Answers"
+                      : "Questions with Single Correct Option"}
+                  </h1>
+                ) : null}
+
               <div className="row">
-                {q.questionremark !="" && (
-                <p>{q.questionremark}</p>
+                {q.questionremark != "" && (
+                  <p>{q.questionremark}</p>
                 )}
-                </div>
+              </div>
               <div className="row">
                 {/* left image */}
                 {imageSrc != null && (
-                  <div className="col-lg-6 col-md-6 col-12 p-0">
+                  <div className="col-lg-4 col-md-4 col-12 p-0">
                     <div className="left-image-div" style={{ padding: 24 }}>
-                      <img src={imageSrc} alt="Question Image" style={{ width: "100%", height: "60vh", borderRadius: 8, objectFit: "cover", }} />
+                      <img src={imageSrc} alt="Question Image" style={{ width: "100%", height: "auto", borderRadius: 8, objectFit: "contain", }} />
                     </div>
                   </div>
                 )}
                 {/* right column */}
-                <div className={`${(imageSrc != null) ? "col-lg-6 col-md-6 col-12" : "col-lg-12 col-md-12 col-12"} p-0`}>
+                <div className={`${(imageSrc != null) ? "col-lg-8 col-md-8 col-12" : "col-lg-12 col-md-12 col-12"} p-0`}>
                   <div style={styles.containerRight}>
                     {/* question text always on top */}
                     <h4 style={styles.questionText}>Q:{q.ordering} - {q.questiontext}</h4>
@@ -467,7 +484,7 @@ SUBMIT ANSWER
                                 // const isCorrectOption = s.key === correctOptionKey;
 
                                 const isCorrectOption = isMultiple ? q.correctoption.includes(s.key) : s.key === correctOptionKey[0];
-                           
+
                                 return (
                                   <div key={s.key} className="item">
                                     <div style={{ display: "flex", alignItems: "center" }}>
@@ -478,7 +495,7 @@ SUBMIT ANSWER
                                           {totalResponses >= 5 && (
                                             <div style={styles.percentText}> &nbsp; {s.percent}% </div>
                                           )}
-                                        </div> 
+                                        </div>
                                         {totalResponses >= 5 && (
                                           <div style={styles.progressWrap}>
                                             <div style={{ width: `${s.percent}%`, height: "100%", background: (isSubmitted && isCorrect === true && isCorrectOption) ? "#22c55e" : "#2b5db5", borderRadius: 6 }} />
@@ -558,23 +575,23 @@ SUBMIT ANSWER
 
                           {/* BACK TO QUESTION link (left side) */}
                           {/* {isCorrect !== true && ( */}
-                            <div style={styles.submitRow}>
-                              <span
-                                onClick={() => setShowStats(prev => ({ ...prev, [id]: false }))}
-                                style={styles.backToQuestionLink}
-                              >
-                                <i className="bi bi-arrow-left"></i> Back to question
-                              </span>
-                            </div>
+                          <div style={styles.submitRow}>
+                            <span
+                              onClick={() => setShowStats(prev => ({ ...prev, [id]: false }))}
+                              style={styles.backToQuestionLink}
+                            >
+                              <i className="bi bi-arrow-left"></i> Back to question
+                            </span>
+                          </div>
                           {/* )} */}
                         </div>
 
                         {/* floating Next Challenge button */}
-                        {isSubmitted && (isCorrect === false || isCorrect === true) && (
+                        {/* {isSubmitted && (isCorrect === false || isCorrect === true) && (
                           <div style={{ minWidth: 160, display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}>
                             <button style={styles.nextButtonFloating} onClick={() => nextChallenge(index)}>NEXT CHALLENGE <i className="bi bi-arrow-right"></i></button>
                           </div>
-                        )}
+                        )} */}
                       </div>
                     ) : (
                       /* interactive question view */

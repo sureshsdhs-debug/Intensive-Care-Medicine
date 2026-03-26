@@ -35,6 +35,38 @@ body {
     }
 }
 
+
+
+input:focus{
+    /* box-shadow: none!important; */
+    outline: none!important;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #2b5db5;
+  border-radius: 50%;
+  position: relative;
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked::after,
+input[type="radio"]:checked::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: #2b5db5;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
 header {
     height: 70px;
     width: 100vw;
@@ -770,6 +802,7 @@ header {
     color: #000;
     cursor: pointer;
 }
+
 
 /* .active-menu {
   color: #0d6efd;

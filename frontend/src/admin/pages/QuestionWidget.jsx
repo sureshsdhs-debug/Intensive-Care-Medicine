@@ -439,20 +439,20 @@ SUBMIT ANSWER
             <div className="container-fluid p-0">
 
 
-                {index === 0 || questions[index - 1].questiontype !== q.questiontype ? (
-                  <h1
-                    className="question-type-text"
-                    id={
-                      q.questiontype === "Multiple Question"
-                        ? "multiple-question-id"
-                        : "single-question-id"
-                    }
-                  >
-                    {q.questiontype === "Multiple Question"
-                      ? "Questions with Multiple Correct Answers"
-                      : "Questions with Single Correct Option"}
-                  </h1>
-                ) : null}
+              {index === 0 || questions[index - 1].questiontype !== q.questiontype ? (
+                <h1
+                  className="question-type-text"
+                  id={
+                    q.questiontype === "Multiple Question"
+                      ? "multiple-question-id"
+                      : "single-question-id"
+                  }
+                >
+                  {q.questiontype === "Multiple Question"
+                    ? "Questions with Multiple Correct Answers"
+                    : "Questions with Single Correct Option"}
+                </h1>
+              ) : null}
 
               <div className="row">
                 {q.questionremark != "" && (
@@ -621,9 +621,10 @@ SUBMIT ANSWER
                             }
                           }
 
-
+                          const optionLabel = String.fromCharCode(65 + i); // A, B, C, D...
                           return (
                             <div onClick={() => handleSelect(id, opt, isMultiple)} style={{ ...styles.optionRow, background, border }} key={optionId}>
+                              {optionLabel}
                               <input id={optionId} type={isMultiple ? "checkbox" : "radio"} name={`radio-${id}`} checked={checked || false} readOnly />
 
                               <label htmlFor={optionId} style={{ cursor: "pointer", color }}>{opt}</label>
@@ -672,7 +673,7 @@ SUBMIT ANSWER
                         {isSubmitted || (isCorrect === false || isCorrect === true) ? (
                           <div style={{ marginTop: 12 }}>
                             <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
-                              <button style={{ padding: "7px 15px", borderRadius: 6, border: "1px solid #ccc", background: "#0f7fee", fontWeight: 500 }} onClick={() => nextChallenge(index)} className="prebutton">NEXT <i className="bi bi-arrow-right"></i></button>
+                              {/* <button style={{ padding: "7px 15px", borderRadius: 6, border: "1px solid #ccc", background: "#0f7fee", fontWeight: 500 }} onClick={() => nextChallenge(index)} className="prebutton">NEXT <i className="bi bi-arrow-right"></i></button> */}
                               <button style={{ padding: "7px 15px", borderRadius: 6, border: "none", background: "#0f7fee", color: "#fff", fontWeight: 500 }} onClick={() => tryAgain(id)} className="prebutton"><i className="bi bi-arrow-clockwise"></i> TRY AGAIN</button>
                             </div>
                           </div>

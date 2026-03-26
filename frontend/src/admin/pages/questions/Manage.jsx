@@ -27,6 +27,7 @@ const Manage = () => {
     { name: "Question Type", selector: (row) => row.questiontype, sortable: true },
     { name: "Correct Option", selector: (row) => row.answerreason, sortable: true },
     { name: "Ordering", selector: (row) => row.ordering, sortable: true },
+    { name: "Audio", selector: (row) =>  row.answeraudio, sortable: true },
     { name: "Status", selector: (row) => (row.status == 1 ? (<span className='badge bg-success'>Active</span>) : (<span className='badge bg-danger'>Inactive</span>)), sortable: true },
     {
       name: "Action",
@@ -108,6 +109,7 @@ const filteredRecords = records.filter((item) => {
             status: question.status,
             ordering: question.ordering,
             answerreason: question.answerreason,
+            answeraudio: question.answeraudio,
           }));
 
           setRecords(formattedData);
