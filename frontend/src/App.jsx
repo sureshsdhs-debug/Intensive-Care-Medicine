@@ -42,12 +42,12 @@ import EditTableOfContents from './admin/pages/table-of-contents/Edit';
 import ViewTableOfContents from './admin/pages/table-of-contents/View';
 
 import ProtectedRoute from './auth/ProtectedRoute';
-import { AuthProvider } from './auth/AuthProvider'; 
+import { AuthProvider } from './auth/AuthProvider';
 
 function App() {
   const [roleAuth, setRoleAuth] = useState(null);
-  
-const [isManualNavigation, setIsManualNavigation] = useState(false);
+
+  const [isManualNavigation, setIsManualNavigation] = useState(false);
   const getRole = () => {
     const userRole = localStorage.getItem('role');
     if (userRole) {
@@ -63,23 +63,31 @@ const [isManualNavigation, setIsManualNavigation] = useState(false);
   }, []);
 
   return (
-    <Router> 
-      <AuthProvider> 
-        <ProtectedRoute>
-          <Header getRole={getRole} roleAuth={roleAuth} setIsManualNavigation={setIsManualNavigation}/>
-        </ProtectedRoute>
-        <div className="main-container">
-          {/* Show Nav only if authenticated */}
-          <ProtectedRoute>
-            <Nav getRole={getRole} roleAuth={roleAuth} />
-          </ProtectedRoute>
 
-          <Routes>
-            {/* Public routes */}
+    <Router>
+      <AuthProvider>
+        {/* <ProtectedRoute>
+          <Header getRole={getRole} roleAuth={roleAuth} setIsManualNavigation={setIsManualNavigation}/>
+        </ProtectedRoute> */}
+        <div className="main-container" style={{
+                justifyContent: "center"
+          }}>
+
+          {/* <ProtectedRoute>
+            <Nav getRole={getRole} roleAuth={roleAuth} />
+          </ProtectedRoute> */}
+          <div style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh"
+          }}>
+            <h1 >Server Error 500</h1>
+          </div>
+          {/* <Routes> 
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-
-            {/* Protected routes */}
+ 
             <Route
               path="/dashboard"
               element={
@@ -267,7 +275,7 @@ const [isManualNavigation, setIsManualNavigation] = useState(false);
                 </ProtectedRoute>
               }
             />
-            {/* Table Of Contents */}
+          
              <Route
               path="/table-of-contents"
               element={
@@ -301,9 +309,9 @@ const [isManualNavigation, setIsManualNavigation] = useState(false);
               }
             />
 
-          </Routes>
+          </Routes> */}
         </div>
-      </AuthProvider> 
+      </AuthProvider>
     </Router>
   );
 }
